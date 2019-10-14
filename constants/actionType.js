@@ -1,0 +1,4 @@
+export const COMPLETE_LOADING = 'COMPLETE_LOADING';
+export const COMPLETE_LOGIN = 'COMPLETE_LOGIN';
+export const SELECT_IMAGE = 'SELECT_IMAGE';
+export const LOGOUT = 'LOGOUT';

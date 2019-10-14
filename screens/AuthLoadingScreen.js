@@ -1,35 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Spinner, Content } from 'native-base';
+import { AppLoading } from 'expo';
+import React from 'react';
+import { connect } from 'react-redux';
+import * as Permissions from 'expo-permissions';
 import * as SecureStore from 'expo-secure-store';
+import * as Font from 'expo-font';
+import { Asset } from 'expo-asset';
+import { Ionicons } from '@expo/vector-icons';
+
 import authConstans from '../constants/auth';
 
+const handleLoadingError = error => {
+  console.error(error);
+};
+
 const AuthLoadingScreen = (props) => {
+  const { navigation } = props;
 
-  useEffect(() => {
-    getFacebookToken();
-  });
+  const loadInitialResourcesAsync = async () => {
+    if (!props.isLoadingComplete) {
+      await Promise.all([
+        Asset.loadAsync([
+          require('../assets/images/robot-dev.png'),
+          require('../assets/images/robot-prod.png'),
+        ]),
+        Font.loadAsync({
+          ...Ionicons.font,
+          'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+        }),
+        Permissions.askAsync(
+          Permissions.CAMERA_ROLL,
+          Permissions.LOCATION,
+          Permissions.CAMERA
+        )
+      ]).then(() => {
+        props.dispatch({ type: 'COMPLETE_LOADING' });
+      });
+    }
+  };
 
-  const getFacebookToken = async () => {
+  const navigateMainScreen = async () => {
     try {
-      const fbToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-      props.navigation.navigate(fbToken ? 'Main' : 'Login');
+      const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+
+      if (userToken && props.isAuthorize) {
+        return navigation.navigate('Main');
+      }
+      return navigation.navigate('Login');
     } catch (error) {
       alert(error.message);
     }
   };
 
   return (
-    <Container>
-      <Content contentContainerStyle={{
-          justifyContent: 'center',
-          alignItems:'center',
-          flex: 1
-        }}
-      >
-        <Spinner color='green' />
-      </Content>
-    </Container>
+    <AppLoading
+      startAsync={loadInitialResourcesAsync}
+      onError={handleLoadingError}
+      onFinish={navigateMainScreen}
+    />
   );
 }
 
-export default AuthLoadingScreen;
+export default connect(state => state, null)(AuthLoadingScreen);

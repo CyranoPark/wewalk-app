@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Provider, connect } from 'react-redux';
 import axios from 'axios';
 import * as Facebook from 'expo-facebook';
 import { Alert } from 'react-native'
@@ -26,20 +27,21 @@ const LoginScreen = (props) => {
         const userToken = await axios.post(
           `${process.env.API_URL}/login/facebook`,
           {
-            headers: {
-              'content-type': 'application/json'
-            }
-          },
-          {
             socialService: authConstans.SOCIAL_SERVICE[0],
             socialId: user.id,
             userName: user.name,
             profileImage: user.picture.data.url
-          }
+          },
+          {
+            headers: {
+              'content-type': 'application/json'
+            }
+          },
         ).then(data => data.headers.usertoken);
 
         await SecureStore.setItemAsync(authConstans.FBTOKEN, token);
         await SecureStore.setItemAsync(authConstans.USERTOKEN, userToken);
+        props.dispatch({ type: 'COMPLETE_LOGIN', id: user.id });
 
         Alert.alert('Logged in!', `Hi ${user.name}!`);
         navigation.navigate('Main');
@@ -82,4 +84,4 @@ const LoginScreen = (props) => {
   );
 }
 
-export default LoginScreen;
+export default connect(state => state)(LoginScreen);

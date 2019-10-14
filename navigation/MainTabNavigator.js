@@ -1,10 +1,10 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-
+import { connect } from 'react-redux';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import RecordScreen from '../screens/RecordScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const config = Platform.select({
@@ -35,21 +35,21 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
-const LinksStack = createStackNavigator(
+const RecordStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    Record: RecordScreen,
   },
   config
 );
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+RecordStack.navigationOptions = {
+  tabBarLabel: 'Record',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
   ),
 };
 
-LinksStack.path = '';
+RecordStack.path = '';
 
 const ProfileStack = createStackNavigator(
   {
@@ -69,10 +69,10 @@ ProfileStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  RecordStack,
   ProfileStack,
 });
 
 tabNavigator.path = '';
 
-export default tabNavigator;
+export default connect()(tabNavigator);

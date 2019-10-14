@@ -8,7 +8,10 @@ const HeaderArea = (props) => {
       <Header>
         <Left>
           <Button transparent>
-            <Icon name='arrow-back' />
+            <Icon
+              name='arrow-back'
+              style={{color: colorConstans.mainColor}}
+            />
           </Button>
         </Left>
         <Body>
@@ -16,7 +19,11 @@ const HeaderArea = (props) => {
         </Body>
         <Right>
           <Button transparent>
-            <Text>Cancel</Text>
+            <Text
+              style={{color: colorConstans.mainColor}}
+            >
+              Cancel
+            </Text>
           </Button>
         </Right>
       </Header>
