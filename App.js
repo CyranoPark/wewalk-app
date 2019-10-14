@@ -1,3 +1,6 @@
+if (__DEV__) {
+  require('./environment')();
+}
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
@@ -8,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AppNavigator from './navigation/AppNavigator';
 
 export default function App(props) {
+  console.log(props)
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {

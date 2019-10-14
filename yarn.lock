@@ -1579,6 +1579,11 @@ babel-plugin-syntax-trailing-function-commas@^7.0.0-beta.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-trailing-function-commas/-/babel-plugin-syntax-trailing-function-commas-7.0.0-beta.0.tgz#aa213c1435e2bffeb6fca842287ef534ad05d5cf"
   integrity sha512-Xj9XuRuz3nTSbaTXWv3itLOcxyF4oPD8douBBmj7U9BBC6nEBYfyOJYQMf/8PJAFotC62UY5dFfIGEPr7WswzQ==
 
+babel-plugin-transform-inline-environment-variables@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-inline-environment-variables/-/babel-plugin-transform-inline-environment-variables-0.4.3.tgz#a3b09883353be8b5e2336e3ff1ef8a5d93f9c489"
+  integrity sha1-o7CYgzU76LXiM24/8e+KXZP5xIk=
+
 babel-preset-expo@^7.0.0, babel-preset-expo@~7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/babel-preset-expo/-/babel-preset-expo-7.0.0.tgz#1d288e0efb17dcea84b0d30ce5f5ab99f781ae4a"
@@ -2600,6 +2605,11 @@ expo-constants@^7.0.0, expo-constants@~7.0.0:
   dependencies:
     ua-parser-js "^0.7.19"
 
+expo-facebook@~7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/expo-facebook/-/expo-facebook-7.0.0.tgz#532b42d67ec91df051fa1f41ee8a1322154fba2b"
+  integrity sha512-R/ogRMxFqUCh08f575IR8aPy8q5463E5Sg/Ef7nasuqKKh1tEcVh4JoRXN3pEnZ9hivnRsXvJOchmPsy+L1upw==
+
 expo-file-system@~7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-7.0.0.tgz#ac98233b18774cce299fffd9451f08f21b116564"
@@ -2640,6 +2650,11 @@ expo-permissions@~7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-7.0.0.tgz#f4135c3cf8e49c673a9a714459a1eb2b40fe2092"
   integrity sha512-C+qyVz+pdZO4YpVR2HSC3gsBZg0Qb8brCFgzmDmWcAtgrOiHClaLPdhI2XtQuGh8ubXcKPUGZp++UCEGiG0Jxg==
+
+expo-secure-store@~7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-7.0.0.tgz#83aee977ef2fe0bb9fa9f2baecdf6d50b26a893a"
+  integrity sha512-7O80jH+JynoO8OlAHSj+F9Rbk1Vaf8309shuyZVW3C0tB1dXN+UiJUrCKAJ38dI8k/eV8+f5orw7x67VTJNUSQ==
 
 expo-sqlite@~7.0.0:
   version "7.0.0"

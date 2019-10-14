@@ -11,3 +11,5 @@ npm-debug.*
 web-build/
 web-report/
 .DS_store
+.env
+environment.js

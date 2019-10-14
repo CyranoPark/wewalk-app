@@ -1,12 +1,13 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "dev": "ENV=dev expo start"
   },
   "jest": {
     "preset": "jest-expo"
@@ -19,10 +20,12 @@
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",
+    "expo-facebook": "~7.0.0",
     "expo-font": "^7.0.0",
     "expo-image-picker": "~7.0.0",
     "expo-location": "~7.0.0",
     "expo-permissions": "~7.0.0",
+    "expo-secure-store": "~7.0.0",
     "expo-web-browser": "^7.0.0",
     "native-base": "^2.13.8",
     "react": "16.8.3",
@@ -34,6 +37,7 @@
     "react-navigation": "^3.12.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-preset-expo": "^7.0.0",
     "jest-expo": "^35.0.0"
   },

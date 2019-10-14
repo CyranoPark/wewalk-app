@@ -1,6 +1,8 @@
 const tintColor = '#2f95dc';
 
 export default {
+  facebookDefaultColor: '#3b5998',
+  mainColor: '#48B02D',
   tintColor,
   tabIconDefault: '#ccc',
   tabIconSelected: tintColor,

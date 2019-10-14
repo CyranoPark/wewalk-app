@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image} from 'react-native';
 import { Container, Content, Button, Text } from 'native-base';
-import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import axios from 'axios';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import HeaderArea from '../components/HeaderArea';
 
 export default class LinksScreen extends Component {
   constructor(props) {
@@ -65,6 +66,7 @@ export default class LinksScreen extends Component {
     let { image } = this.state;
     return (
       <>
+        <HeaderArea />
         <MapView
           provider={PROVIDER_GOOGLE}
           style={ { width:"100%", height:"50%" } }
@@ -121,6 +123,7 @@ export default class LinksScreen extends Component {
 
 LinksScreen.navigationOptions = {
   title: 'Links',
+  header: null
 };
 
 const styles = StyleSheet.create({
