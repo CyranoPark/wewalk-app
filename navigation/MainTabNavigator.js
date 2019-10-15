@@ -4,7 +4,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import { connect } from 'react-redux';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import RecordScreen from '../screens/RecordScreen';
+import RecordNavigator from './RecordNavigator';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const config = Platform.select({
@@ -37,7 +37,7 @@ HomeStack.path = '';
 
 const RecordStack = createStackNavigator(
   {
-    Record: RecordScreen,
+    Record: RecordNavigator,
   },
   config
 );
@@ -71,6 +71,8 @@ const tabNavigator = createBottomTabNavigator({
   HomeStack,
   RecordStack,
   ProfileStack,
+},{
+  initialRouteName: 'HomeStack'
 });
 
 tabNavigator.path = '';

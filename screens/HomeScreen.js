@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 
 const HomeScreen = (props) => {
   useEffect(() => {
-    console.log(props.socialId)
+
   });
 
   return (

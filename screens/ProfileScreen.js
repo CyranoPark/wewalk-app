@@ -8,6 +8,7 @@ import colorConstans from '../constants/Colors';
 import axios from 'axios';
 
 const ProfileScreen = props => {
+  const { onLogoutButtonPress } = props.screenProps.props;
 
   logOutAsync = async () => {
       const userToken = await SecureStore.getItemAsync('USERTOKEN');
@@ -25,7 +26,7 @@ const ProfileScreen = props => {
       ).then(async () => {
         await SecureStore.deleteItemAsync(authConstans.FBTOKEN);
         await SecureStore.deleteItemAsync(authConstans.USERTOKEN);
-        props.dispatch({ type: 'LOGOUT' });
+        onLogoutButtonPress();
         props.navigation.navigate('Login');
       });
   };

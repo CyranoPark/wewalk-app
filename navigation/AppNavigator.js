@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
@@ -16,15 +17,38 @@ const AppNavigator = createAppContainer(
   })
 );
 
+const AppContainer = (props) => {
+  return (
+    <AppNavigator
+      screenProps={
+        {
+          props
+        }
+      }
+    />
+);
+}
+
 const mapStateToProps = state => {
-  return state;
+  const { isLoadingComplete, socialId, recordingStatus } = state;
+
+  return {
+    isLoadingComplete,
+    socialId,
+    recordingStatus
+  };
 }
 
-const mapDispatchToProps = dispatch => {
-  return {};
-}
+const mapDispatchToProps = dispatch => ({
+  completeAppLoading: () => dispatch({ type: 'COMPLETE_LOADING' }),
+  afterLoginButtonPress: (userId) => dispatch({ type: 'COMPLETE_LOGIN', id: userId }),
+  onLogoutButtonPress: () => dispatch({ type: 'LOGOUT' }),
+  onRecordStartButtonPress: () => dispatch({ type: 'START_RECORDING' }),
+  onRecordEndButtonPress: () => dispatch({ type: 'END_RECORDING' }),
+  onRecordInitButtonPress: () => dispatch({ type: 'INIT_RECORDING' })
+});
 
-export default ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppNavigator);
+export default ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppContainer);
 
 // const AppContainer = () => (
 //   <Provider store={store}>

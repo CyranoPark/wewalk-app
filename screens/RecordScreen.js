@@ -1,24 +1,78 @@
 import React from 'react';
 import { View, Image} from 'react-native';
-import { connect } from 'react-redux';
 import { Container, Content, Button, Text } from 'native-base';
 import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
+import * as SecureStore from 'expo-secure-store';
+import authConstans from '../constants/auth';
 import axios from 'axios';
 import * as Location from 'expo-location';
-import HeaderArea from '../components/HeaderArea';
 
-const RecordScreen = (props) => {
+export default RecordScreen = props => {
+  const { socialId, recordId, onRecordEndButtonPress } = props;
+
+  const createFormData = (photo, coords) => {
+    const data = new FormData();
+
+    data.append("file", {
+      uri: photo.uri,
+      name: photo.uri.split('/').pop(),
+      type: photo.type,
+      coords
+    });
+
+    return data;
+  };
+
+  const getImageUrl = (imageData, userToken) => (
+    axios.post(
+      `${process.env.API_URL}/course/${recordId}/image`,
+      imageData,
+      {
+        headers: {
+          'Content-Type': `multipart/form-data`,
+          'userToken': 'Bearer ' + userToken,
+          socialId
+        }
+      },
+    ).then(({ data }) => data.imageUrl)
+  );
+
+  const saveImageWithLocation = (coords, imageUrl, userToken) => (
+    axios.put(
+      `${process.env.API_URL}/course/${recordId}/image`,
+      {
+        location: [coords.latitude, coords.longitude],
+        imageUrl
+      },
+      {
+        headers: {
+          'content-type': 'application/json',
+          'userToken': 'Bearer ' + userToken,
+          socialId
+        }
+      },
+    ).then(res => res.data)
+  );
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+    const currentLocation = await Location.getCurrentPositionAsync();
+    const image = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
+      base64: true,
       aspect: [4, 3],
     });
 
-    if (!result.cancelled) {
-      props.dispatch({ type: 'SELECT_IMAGE', imageUrl: result.uri });
+    const imageData = createFormData(image, currentLocation.coords);
+
+    if (!image.cancelled) {
+      const imageUrl = await getImageUrl(imageData, userToken);
+      console.log(imageUrl);
+      const save = await saveImageWithLocation(currentLocation.coords, imageUrl, userToken);
+      console.log(save);
+      // props.dispatch({ type: 'SELECT_IMAGE', imageUrl: result.uri });
     }
   };
 
@@ -30,13 +84,12 @@ const RecordScreen = (props) => {
     });
 
     if (!result.cancelled) {
-      props.dispatch({ type: 'SELECT_IMAGE', imageUrl: result.uri });
+      // props.dispatch({ type: 'SELECT_IMAGE', imageUrl: result.uri });
     }
   };
 
   return (
     <>
-      <HeaderArea name={'Record'}/>
       <MapView
         provider={PROVIDER_GOOGLE}
         style={ { width:"100%", height:"50%" } }
@@ -81,8 +134,13 @@ const RecordScreen = (props) => {
           >
             <Text>take picture</Text>
           </Button>
+          <Button light
+            onPress={onRecordEndButtonPress}
+          >
+            <Text>END walking</Text>
+          </Button>
           <Image
-            source={{uri: props.selectedImage}}
+            // source={{uri: props.selectedImage}}
             style={{width: 400, height: 400}}
           ></Image>
           </Content>
@@ -91,11 +149,4 @@ const RecordScreen = (props) => {
     </>
   );
 };
-
-RecordScreen.navigationOptions = {
-  title: 'Record',
-  header: null
-};
-
-export default connect(state => state)(RecordScreen);
 

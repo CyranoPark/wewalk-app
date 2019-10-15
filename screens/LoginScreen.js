@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Provider, connect } from 'react-redux';
+import React from 'react';
 import axios from 'axios';
 import * as Facebook from 'expo-facebook';
 import { Alert } from 'react-native'
@@ -10,8 +9,9 @@ import colorConstans from '../constants/Colors';
 import HeaderArea from '../components/HeaderArea';
 
 
-const LoginScreen = (props) => {
+export default LoginScreen = props => {
   const { navigation } = props;
+  const { afterLoginButtonPress } = props.screenProps.props;
 
   const loginWithFacebook = async () => {
     try {
@@ -41,7 +41,7 @@ const LoginScreen = (props) => {
 
         await SecureStore.setItemAsync(authConstans.FBTOKEN, token);
         await SecureStore.setItemAsync(authConstans.USERTOKEN, userToken);
-        props.dispatch({ type: 'COMPLETE_LOGIN', id: user.id });
+        afterLoginButtonPress(user.id);
 
         Alert.alert('Logged in!', `Hi ${user.name}!`);
         navigation.navigate('Main');
@@ -72,7 +72,7 @@ const LoginScreen = (props) => {
           </Text>
           <Button
             primary
-            onPress={()=>loginWithFacebook()}
+            onPress={loginWithFacebook}
             style={{backgroundColor: colorConstans.facebookDefaultColor}}
           >
             <Icon name="logo-facebook" />
@@ -84,4 +84,8 @@ const LoginScreen = (props) => {
   );
 }
 
-export default connect(state => state)(LoginScreen);
+const mapDispatchToProps = dispatch => ({
+  completeLogin: (userId) => dispatch({ type: 'COMPLETE_LOGIN', id: userId })
+});
+
+// export default connect(null, mapDispatchToProps)(LoginScreen);

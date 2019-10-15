@@ -13,19 +13,25 @@ const handleLoadingError = error => {
   console.error(error);
 };
 
-const AuthLoadingScreen = (props) => {
+export default AuthLoadingScreen = (props) => {
   const { navigation } = props;
+  const {
+    isLoadingComplete,
+    socialId,
+    completeAppLoading,
+    completeLogin
+  } = props.screenProps.props;
 
   const loadInitialResourcesAsync = async () => {
-    if (!props.isLoadingComplete) {
+    if (!isLoadingComplete) {
       await Promise.all([
         Asset.loadAsync([
           require('../assets/images/robot-dev.png'),
           require('../assets/images/robot-prod.png'),
         ]),
         Font.loadAsync({
-          ...Ionicons.font,
-          'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+          // ...Ionicons.font,
+          // 'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
         }),
         Permissions.askAsync(
           Permissions.CAMERA_ROLL,
@@ -33,31 +39,42 @@ const AuthLoadingScreen = (props) => {
           Permissions.CAMERA
         )
       ]).then(() => {
-        props.dispatch({ type: 'COMPLETE_LOADING' });
+        completeAppLoading();
       });
     }
   };
 
-  const navigateMainScreen = async () => {
-    try {
-      const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-
-      if (userToken && props.isAuthorize) {
-        return navigation.navigate('Main');
-      }
-      return navigation.navigate('Login');
-    } catch (error) {
-      alert(error.message);
+  const navigateLoginScreen = async () => {
+    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+    if (userToken && socialId) {
+      return navigation.navigate('Main');
     }
+    return navigation.navigate('Login', {
+      completeLogin
+    });
   };
 
   return (
     <AppLoading
       startAsync={loadInitialResourcesAsync}
       onError={handleLoadingError}
-      onFinish={navigateMainScreen}
+      onFinish={navigateLoginScreen}
     />
   );
-}
+};
 
-export default connect(state => state, null)(AuthLoadingScreen);
+const mapStateToProps = state => {
+  const { isLoadingComplete, socialId } = state;
+
+  return {
+    isLoadingComplete,
+    socialId
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  completeAppLoading: () => dispatch({ type: 'COMPLETE_LOADING' }),
+  completeLogin: (userId) => dispatch({ type: 'COMPLETE_LOGIN', id: userId })
+});
+
+// export default connect(mapStateToProps, mapDispatchToProps)(AuthLoadingScreen);
