@@ -18,22 +18,22 @@ export default RecordStartScreen = props => {
 */
 
   const createInitialRecord = async () => {
-    // const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-      const userToken = 'dfdfadf'
-      const socialId = 2506019922818198
+    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+      // const userToken = 'dfdfadf'
+      // const socialId = 2506019922818198
     const currentLocation = await Location.getCurrentPositionAsync();
-    // const startLocation = {
-    //   latitude: currentLocation.coords.latitude,
-    //   longitude: currentLocation.coords.longitude,
-    //   timestamp: currentLocation.timestamp
-    // };
+    const startLocation = {
+      latitude: currentLocation.coords.latitude,
+      longitude: currentLocation.coords.longitude,
+      timestamp: currentLocation.timestamp
+    };
 
     //mockdata
-    const startLocation = {
-      latitude: mockData.latitude,
-      longitude: mockData.longitude,
-      timestamp: new Date()
-    };
+    // const startLocation = {
+    //   latitude: mockData.latitude,
+    //   longitude: mockData.longitude,
+    //   timestamp: new Date()
+    // };
     //end
     await axios.post(
       `${process.env.API_URL}/course/new`,

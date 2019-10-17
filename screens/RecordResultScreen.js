@@ -7,6 +7,7 @@ export default RecordResultScreen = props => {
   const { onRecordInitButtonPress } = props;
   return (
     <Container>
+      <HeaderArea name={'record'} />
       <Content
         contentContainerStyle={{
           alignItems:'center'
@@ -21,12 +22,14 @@ export default RecordResultScreen = props => {
               textAlign: 'center',
               marginBottom: 50
             }}>
-            RESULT
+            Record Result
           </Text>
-          <Button light
+          <Button
+            primary
             onPress={onRecordInitButtonPress}
+            style={{ textAlign: 'center', backgroundColor: colorConstans.facebookDefaultColor}}
           >
-            <Text>END walking</Text>
+            <Text>End Record</Text>
           </Button>
         </View>
       </Content>

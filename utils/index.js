@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment'
 
 export const calculateElevation = (prevCoords, curCoords) => {
   const prevLocation = [ prevCoords.latitude, prevCoords.longitude ].join(',');
@@ -27,3 +28,20 @@ export const calculateDistance = (prevCoords, curCoords) => {
     }
   }).then(({ data }) => data.rows[0].elements[0].distance.value);
 };
+
+export const changeElevationFormat = elevation => {
+  return Math.round(elevation);
+};
+
+export const changeDistanceFormat = distance => {
+  return Math.round(distance / 100) * 100 / 1000;
+};
+
+export const changeRecordTimeFormat = (startTime) => {
+  const startMoment = moment(startTime);
+  const currentMoment = moment(new Date());
+
+  return currentMoment.diff(startMoment, 'minutes');
+};
+
+

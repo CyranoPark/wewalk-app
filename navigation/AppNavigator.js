@@ -49,9 +49,3 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppContainer);
-
-// const AppContainer = () => (
-//   <Provider store={store}>
-//     <ConnectedApp />
-//   </Provider>
-// );

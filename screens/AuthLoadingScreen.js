@@ -49,10 +49,10 @@ export default AuthLoadingScreen = (props) => {
     if (userToken && socialId) {
       return navigation.navigate('Main');
     }
-    return navigation.navigate('Main');
-    // return navigation.navigate('Login', {
-    //   completeLogin
-    // });
+    // return navigation.navigate('Main');
+    return navigation.navigate('Login', {
+      completeLogin
+    });
   };
 
   return (

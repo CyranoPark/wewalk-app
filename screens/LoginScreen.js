@@ -82,10 +82,4 @@ export default LoginScreen = props => {
       </Content>
     </Container>
   );
-}
-
-const mapDispatchToProps = dispatch => ({
-  completeLogin: (userId) => dispatch({ type: 'COMPLETE_LOGIN', id: userId })
-});
-
-// export default connect(null, mapDispatchToProps)(LoginScreen);
+};
