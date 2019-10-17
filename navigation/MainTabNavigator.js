@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
@@ -35,7 +35,7 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
-const RecordStack = createStackNavigator(
+const RecordStack = createSwitchNavigator(
   {
     Record: RecordNavigator,
   },

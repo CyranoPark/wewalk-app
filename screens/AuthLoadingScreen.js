@@ -30,8 +30,8 @@ export default AuthLoadingScreen = (props) => {
           require('../assets/images/robot-prod.png'),
         ]),
         Font.loadAsync({
-          // ...Ionicons.font,
-          // 'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+          ...Ionicons.font,
+          Roboto_medium: require('../assets/fonts/Roboto_medium.ttf')
         }),
         Permissions.askAsync(
           Permissions.CAMERA_ROLL,
@@ -49,9 +49,10 @@ export default AuthLoadingScreen = (props) => {
     if (userToken && socialId) {
       return navigation.navigate('Main');
     }
-    return navigation.navigate('Login', {
-      completeLogin
-    });
+    return navigation.navigate('Main');
+    // return navigation.navigate('Login', {
+    //   completeLogin
+    // });
   };
 
   return (

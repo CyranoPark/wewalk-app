@@ -5,10 +5,10 @@ import * as SecureStore from 'expo-secure-store';
 import * as Location from 'expo-location';
 import authConstans from '../constants/auth';
 import colorConstans from '../constants/Colors';
-
+import HeaderArea from '../components/HeaderArea';
+import mockData from '../constants/locationData'
 export default RecordStartScreen = props => {
-  console.log(props)
-  const { socialId, setRecordId, onRecordStartButtonPress } = props;
+  const { socialId, courseId, onRecordStartButtonPress } = props;
 /*
 	"socialId" : "2506019922818198",
 	"startLocation" : {
@@ -18,13 +18,23 @@ export default RecordStartScreen = props => {
 */
 
   const createInitialRecord = async () => {
-    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+    // const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+      const userToken = 'dfdfadf'
+      const socialId = 2506019922818198
     const currentLocation = await Location.getCurrentPositionAsync();
+    // const startLocation = {
+    //   latitude: currentLocation.coords.latitude,
+    //   longitude: currentLocation.coords.longitude,
+    //   timestamp: currentLocation.timestamp
+    // };
+
+    //mockdata
     const startLocation = {
-      latitude: currentLocation.coords.latitude,
-      longitude: currentLocation.coords.longitude,
-      timestamps: currentLocation.timestamp
+      latitude: mockData.latitude,
+      longitude: mockData.longitude,
+      timestamp: new Date()
     };
+    //end
     await axios.post(
       `${process.env.API_URL}/course/new`,
       {
@@ -38,13 +48,13 @@ export default RecordStartScreen = props => {
         }
       },
     ).then(({ data }) => {
-      setRecordId(data._id);
-      onRecordStartButtonPress();
+      onRecordStartButtonPress(data._id, data.start_location);
     });
   };
 
   return (
     <Container>
+      <HeaderArea name={'record'} />
       <Content
         contentContainerStyle={{
           alignItems:'center'
