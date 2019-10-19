@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Container, Content, Button, Text, Fab, Icon } from 'native-base';
+import { Container, Button, Text, Fab, Icon } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
-import * as SecureStore from 'expo-secure-store';
-import axios from 'axios';
-import * as Location from 'expo-location';
-import authConstans from '../constants/auth';
 import Map from '../components/Map';
 
 import {
@@ -15,10 +11,10 @@ import {
 } from '../utils/index';
 
 export default RecordScreen = props => {
+  const [isFabActive, setIsFabActive] = useState(false);
   const {
-    socialId,
-    courseId,
     startLocation,
+    currentLocation,
     totalCoursePath,
     totalCourseImages,
     courseDistance,
@@ -26,7 +22,6 @@ export default RecordScreen = props => {
     onPickImage,
     onRecordEndButtonPress
   } = props;
-  const [isFabActive, setIsFabActive] = useState(false);
 
   const pickImage = async () => {
     const image = await ImagePicker.launchImageLibraryAsync({
@@ -54,10 +49,11 @@ export default RecordScreen = props => {
   };
 
   return (
-      <Container style={{ flex: 1, justifyContent:'center', height: '100%', position:'relative' }}>
+    <Container style={{ flex: 1, justifyContent:'center', height: '100%', position:'relative' }}>
       <Map
         style={styles.mapview}
         startLocation={startLocation}
+        currentLocation={currentLocation}
         totalCoursePath={totalCoursePath}
         totalCourseImages={totalCourseImages}
       />

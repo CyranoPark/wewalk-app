@@ -1,19 +1,18 @@
 import React from 'react';
-import { Container, Icon, Button, Text, Content, View } from 'native-base';
-import HeaderArea from '../components/HeaderArea';
+import { ScrollView, View } from 'react-native'
+import { Container, Button, Text } from "native-base";
+import Course from '../components/Course';
 import colorConstans from '../constants/Colors';
 
 export default RecordResultScreen = props => {
-  const { onRecordInitButtonPress } = props;
+  const { onRecordInitButtonPress, totalCourseData, startLocation, currentLocation, totalCoursePath, totalCourseImages } = props;
+
   return (
     <Container>
-      <HeaderArea name={'record'} />
-      <Content
-        contentContainerStyle={{
-          alignItems:'center'
-        }}
-      >
-        <View>
+      <View style={{ flex: 1, marginTop: 50 }}>
+        <ScrollView contentContainerStyle={{
+          alignItems: 'center',
+        }}>
           <Text
             style={{
               color: colorConstans.mainColor,
@@ -27,12 +26,20 @@ export default RecordResultScreen = props => {
           <Button
             primary
             onPress={onRecordInitButtonPress}
-            style={{ textAlign: 'center', backgroundColor: colorConstans.facebookDefaultColor}}
+            style={{ textAlign: 'center', backgroundColor: colorConstans.mainColor}}
           >
-            <Text>End Record</Text>
+            <Text>Go to Start</Text>
           </Button>
-        </View>
-      </Content>
+          <Course
+            totalCourseData={totalCourseData}
+            totalCoursePath={totalCoursePath}
+            totalCourseImages={totalCourseImages}
+            startLocation={startLocation}
+            currentLocation={currentLocation}
+            style={{ marginBottom: 50 }}
+          />
+        </ScrollView>
+      </View>
     </Container>
   );
 };

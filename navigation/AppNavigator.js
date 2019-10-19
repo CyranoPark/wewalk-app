@@ -30,19 +30,16 @@ const AppContainer = (props) => {
 }
 
 const mapStateToProps = state => {
-  const { isLoadingComplete, socialId, recordingStatus } = state;
+  const { isLoadingComplete, recordingStatus } = state;
 
   return {
     isLoadingComplete,
-    socialId,
     recordingStatus
   };
 }
 
 const mapDispatchToProps = dispatch => ({
   completeAppLoading: () => dispatch({ type: 'COMPLETE_LOADING' }),
-  afterLoginButtonPress: (userId) => dispatch({ type: 'COMPLETE_LOGIN', id: userId }),
-  onLogoutButtonPress: () => dispatch({ type: 'LOGOUT' }),
   onRecordStartButtonPress: () => dispatch({ type: 'START_RECORDING' }),
   onRecordEndButtonPress: () => dispatch({ type: 'END_RECORDING' }),
   onRecordInitButtonPress: () => dispatch({ type: 'INIT_RECORDING' })

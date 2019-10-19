@@ -17,7 +17,6 @@ export default AuthLoadingScreen = (props) => {
   const { navigation } = props;
   const {
     isLoadingComplete,
-    socialId,
     completeAppLoading,
     completeLogin
   } = props.screenProps.props;
@@ -46,6 +45,7 @@ export default AuthLoadingScreen = (props) => {
 
   const navigateLoginScreen = async () => {
     const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+    const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
     if (userToken && socialId) {
       return navigation.navigate('Main');
     }
@@ -63,19 +63,3 @@ export default AuthLoadingScreen = (props) => {
     />
   );
 };
-
-const mapStateToProps = state => {
-  const { isLoadingComplete, socialId } = state;
-
-  return {
-    isLoadingComplete,
-    socialId
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  completeAppLoading: () => dispatch({ type: 'COMPLETE_LOADING' }),
-  completeLogin: (userId) => dispatch({ type: 'COMPLETE_LOGIN', id: userId })
-});
-
-// export default connect(mapStateToProps, mapDispatchToProps)(AuthLoadingScreen);

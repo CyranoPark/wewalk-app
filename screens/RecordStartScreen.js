@@ -1,14 +1,15 @@
 import React from 'react';
-import { Container, Icon, Button, Text, Content, View } from 'native-base';
+import { StyleSheet } from 'react-native'
+import { Container, Button, Text, Content, View } from 'native-base';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import * as Location from 'expo-location';
 import authConstans from '../constants/auth';
 import colorConstans from '../constants/Colors';
-import HeaderArea from '../components/HeaderArea';
 import mockData from '../constants/locationData'
+
 export default RecordStartScreen = props => {
-  const { socialId, courseId, onRecordStartButtonPress } = props;
+  const { onRecordStartButtonPress } = props;
 /*
 	"socialId" : "2506019922818198",
 	"startLocation" : {
@@ -19,22 +20,13 @@ export default RecordStartScreen = props => {
 
   const createInitialRecord = async () => {
     const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-      // const userToken = 'dfdfadf'
-      // const socialId = 2506019922818198
-    const currentLocation = await Location.getCurrentPositionAsync();
+    const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
+    const currentCoords = await Location.getCurrentPositionAsync();
     const startLocation = {
-      latitude: currentLocation.coords.latitude,
-      longitude: currentLocation.coords.longitude,
-      timestamp: currentLocation.timestamp
+      type: 'Point',
+      coordinates: [currentCoords.coords.latitude, currentCoords.coords.longitude],
+      timestamp: new Date().toISOString()
     };
-
-    //mockdata
-    // const startLocation = {
-    //   latitude: mockData.latitude,
-    //   longitude: mockData.longitude,
-    //   timestamp: new Date()
-    // };
-    //end
     await axios.post(
       `${process.env.API_URL}/course/new`,
       {
@@ -53,33 +45,34 @@ export default RecordStartScreen = props => {
   };
 
   return (
-    <Container>
-      <HeaderArea name={'record'} />
-      <Content
-        contentContainerStyle={{
-          alignItems:'center'
-        }}
-      >
-        <View>
-          <Text
-            style={{
-              color: colorConstans.mainColor,
-              fontSize: 40,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              marginBottom: 50
-            }}>
-            START
-          </Text>
-          <Button
-            primary
-            onPress={createInitialRecord}
-            style={{backgroundColor: colorConstans.facebookDefaultColor}}
-          >
-            <Text>start Record</Text>
-          </Button>
-        </View>
-      </Content>
+    <Container style={styles.container}>
+      <View>
+        <Text
+          style={{
+            color: colorConstans.mainColor,
+            fontSize: 40,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            marginBottom: 50
+          }}>
+          START
+        </Text>
+        <Button
+          primary
+          onPress={createInitialRecord}
+          style={{backgroundColor: colorConstans.mainColor}}
+        >
+          <Text>start Record</Text>
+        </Button>
+      </View>
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});

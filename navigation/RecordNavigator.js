@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import * as Location from 'expo-location';
-import * as SecureStore from 'expo-secure-store';
 
 import RecordStartScreen from '../screens/RecordStartScreen';
 import RecordScreen from '../screens/RecordScreen';
 import RecordResultScreen from '../screens/RecordResultScreen';
 
-import { calculateElevation, calculateDistance } from '../utils';
-import authConstans from '../constants/auth';
+import { postCurrentPath, postImageByLocation, getImageUrl, getCourseData } from '../api';
+import { calculateElevation, calculateDistance, createFormData } from '../utils';
 import mockData from '../constants/locationData';
 
 class RecordNavigator extends Component {
@@ -18,184 +16,90 @@ class RecordNavigator extends Component {
     this.state = {
       courseId: null,
       startLocation: {},
+      currentLocation: {},
       courseCoordinates: [],
       courseDistance: 0,
       courseElevation: 0,
       totalCourseImages: [],
       totalCoursePath: [],
       totalCourseData: {},
-      recordTimers: [],
-      counter: 0
+      recordTimers: []
     }
   }
 
   recordCourse = async () => {
-    await Location.startLocationUpdatesAsync('record');
     const { courseCoordinates } = this.state;
     const currentLocation = await Location.getCurrentPositionAsync({
       accuracy: 5
     });
     const { latitude, longitude } = currentLocation.coords;
-    const { timestamp }  = currentLocation
     const currentCoordinate = {
       latitude,
       longitude,
-      timestamp
+      timestamp: new Date().toISOString()
     };
-
     if (!courseCoordinates.length) {
       return this.setState({
-        courseCoordinates: this.state.courseCoordinates.concat(currentCoordinate)
+        courseCoordinates: [ currentCoordinate ],
+        currentLocation: currentCoordinate
       });
     }
     const prevLocation = courseCoordinates[courseCoordinates.length - 1];
     const currentElevation = await calculateElevation(prevLocation, currentCoordinate);
     const currentDistance = await calculateDistance(prevLocation, currentCoordinate);
 
-    //mockData
-    // const currentCoordinate = {
-    //   latitude: mockData.latitude + ( this.state.counter * 0.0001 ),
-    //   longitude: mockData.longitude + ( this.state.counter * 0.0001 ),
-    //   timestamp: new Date() + this.state.counter,
-    // };
-
-    // const currentElevation = this.state.counter;
-    // const currentDistance = this.state.counter + 100;
-    //end
-
     this.setState({
       courseCoordinates: this.state.courseCoordinates.concat(currentCoordinate),
       courseElevation: this.state.courseElevation + currentElevation,
-      courseDistance: this.state.courseDistance + currentDistance,
-      counter: this.state.counter + 1
+      courseDistance: this.state.courseDistance + currentDistance
     });
   };
 
   addCurrentPath = async () => {
-    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-    const { socialId } = this.props.screenProps.props
-    // const socialId = 2506019922818198
-    // const userToken = 'dfdfadf'
-    const { courseId } = this.state;
-    const path = this.state.courseCoordinates;
-    const distance = this.state.courseDistance;
-    const elevation = this.state.courseElevation;
-
-    const coursePath = await axios.post(`${process.env.API_URL}/course/${courseId}/path`,
-    {
-      path,
-      distance,
-      elevation
-    },
-    {
-      'content-type': 'application/json',
-      'userToken': 'Bearer ' + userToken,
-      socialId
-    }).then(res => res.data);
+    const { courseId, courseCoordinates, courseDistance, courseElevation } = this.state;
+    const coursePath = await postCurrentPath(courseId, courseCoordinates, courseDistance, courseElevation);
 
     this.setState({
-      totalCoursePath: coursePath,
-      courseCoordinates: [],
+      totalCoursePath: coursePath.map(location => {
+        return {
+          latitude: location.coordinates[0],
+          longitude: location.coordinates[1],
+          timestamp: location.timestamp
+        }
+      })
     });
   };
 
-  addImageData = async (image) => {
-    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-    const { socialId } = this.props.screenProps.props;
-    // const socialId = 2506019922818198
-    // const userToken = 'dfdfadf'
-    const currentLocation = {
-      latitude: mockData.latitude + ( this.state.counter * 0.0001 ),
-      longitude: mockData.longitude + ( this.state.counter * 0.0001 ),
-      timestamp: new Date() + this.state.counter,
-    };
-    const { latitude, longitude } = currentLocation;
-    const { timestamp } = currentLocation;
+  addImageData = async image => {
+    const { currentLocation } = this.state;
     const { courseId } = this.state;
-    const imageData = createFormData(image);
-    const imageUrl = await getImageUrl(imageData);
-    const savedImageData = await axios.put(
-      `${process.env.API_URL}/course/${courseId}/image`,
-      {
-        location: {
-          latitude,
-          longitude,
-          timestamp
-        },
-        imageUrl
-      },
-      {
-        headers: {
-          'content-type': 'application/json',
-          'userToken': 'Bearer ' + userToken,
-          socialId
-        }
-      },
-    ).then(res => res.data)
-    .catch(err => alert('failure save image'));
+    const locationData = {
+      type: 'Point',
+      coordinates: [ currentLocation.latitude, currentLocation.longitude ],
+      timestamp: currentLocation.timestamp
+    }
+    const imageUrl = await getImageUrl(courseId, createFormData(image));
+    const savedImageData = await postImageByLocation(locationData, courseId, imageUrl)
 
     this.setState({
       totalCourseImages: this.state.totalCourseImages.concat(savedImageData)
-    })
-
-
-    function createFormData(photo) {
-      const data = new FormData();
-
-      data.append("file", {
-        uri: photo.uri,
-        name: photo.uri.split('/').pop(),
-        type: photo.type
-      });
-
-      return data;
-    };
-
-    function getImageUrl(imageData) {
-      return (
-        axios.post(
-          `${process.env.API_URL}/course/${courseId}/image`,
-          imageData,
-          {
-            headers: {
-              'Content-Type': `multipart/form-data`,
-              'userToken': 'Bearer ' + userToken,
-              socialId
-            }
-          },
-        ).then(({ data }) => data.imageUrl)
-      );
-    }
+    });
   }
 
-  getCourseData = async () => {
-    const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
-    const { socialId } = this.props.screenProps.props
-    // const socialId = 2506019922818198
-    // const userToken = 'dfdfadf'
-    const { courseId } = this.state;
-    return await axios.get(`${process.env.API_URL}/course/${courseId}`,
-    {
-      'content-type': 'application/json',
-      'userToken': 'Bearer ' + userToken,
-      socialId
-    }).then(res => res.data);
-  };
-
-  onStartRecording = (courseId, startLocation) => {
+  onStartRecording = (courseId, location) => {
     const { onRecordStartButtonPress } = this.props.screenProps.props;
     const courseRecodingTimer = setInterval(this.recordCourse, 1000);
     const getCourseTimer = setInterval(this.addCurrentPath, 6000);
-    //mockdata
-    // const startLocation = {
-    //   latitude: mockData.latitude,
-    //   longitude: mockData.longitude,
-    //   timestamp: new Date()
-    // };
-    //end
+    const startLocation = {
+      latitude: location.coordinates[0],
+      longitude: location.coordinates[1],
+      timestamp: location.timestamp
+    };
+
     this.setState({
       courseId,
       startLocation,
+      currentLocation: startLocation,
       recordTimers: [courseRecodingTimer, getCourseTimer]
     });
 
@@ -204,32 +108,41 @@ class RecordNavigator extends Component {
 
   onEndRecording = async () => {
     const { onRecordEndButtonPress } = this.props.screenProps.props;
-
     await this.addCurrentPath();
-    const courseData = await this.getCourseData();
+    const courseData = await getCourseData(this.state.courseId);
     clearInterval(this.state.recordTimers[0]);
     clearInterval(this.state.recordTimers[1]);
 
-    onRecordEndButtonPress();
+    this.setState({
+      totalCourseData: courseData
+    });
 
+    onRecordEndButtonPress();
+  };
+
+  initializeRecordData = () => {
+    const { onRecordInitButtonPress } = this.props.screenProps.props;
     this.setState({
       courseId: null,
       startLocation: {},
+      currentLocation: {},
       courseCoordinates: [],
       courseDistance: 0,
       courseElevation: 0,
       totalCourseImages: [],
       totalCoursePath: [],
-      totalCourseData: courseData,
-      recordTimers: [],
-      counter: 0
+      totalCourseData: {},
+      recordTimers: []
     });
+
+    onRecordInitButtonPress();
   };
 
   render() {
     const {
       courseId,
       startLocation,
+      currentLocation,
       totalCourseImages,
       courseDistance,
       courseElevation,
@@ -237,22 +150,16 @@ class RecordNavigator extends Component {
       totalCourseData
     } = this.state;
 
-    const {
-      onRecordStartButtonPress,
-      onRecordEndButtonPress,
-      onRecordInitButtonPress,
-      recordingStatus,
-      socialId,
-    } = this.props.screenProps.props;
+    const { recordingStatus } = this.props.screenProps.props;
 
     switch (recordingStatus) {
       case 'RECORDING':
         return (
           <>
             <RecordScreen
-              socialId={socialId}
               courseId={courseId}
               startLocation={startLocation}
+              currentLocation={currentLocation}
               totalCoursePath={totalCoursePath}
               totalCourseImages={totalCourseImages}
               courseDistance={courseDistance}
@@ -266,16 +173,18 @@ class RecordNavigator extends Component {
       case 'AFTER_RECORDING':
         return (
           <RecordResultScreen
+            startLocation={startLocation}
+            currentLocation={currentLocation}
+            totalCoursePath={totalCoursePath}
             totalCourseData={totalCourseData}
-            onRecordInitButtonPress={onRecordInitButtonPress}
+            totalCourseImages={totalCourseImages}
+            onRecordInitButtonPress={this.initializeRecordData}
           />
         );
 
       default:
         return (
           <RecordStartScreen
-            socialId={socialId}
-            courseId={courseId}
             onRecordStartButtonPress={this.onStartRecording}
           />
         );

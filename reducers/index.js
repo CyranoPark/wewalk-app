@@ -2,7 +2,6 @@ import { COMPLETE_LOADING, COMPLETE_LOGIN, LOGOUT, SELECT_IMAGE, INIT_RECORDING,
 
 const initialState = {
   isLoadingComplete: false,
-  socialId: '',
   selectedImage: null,
   recordingStatus: 'BEFORE_RECORDING'
 };
@@ -12,16 +11,6 @@ export default reducer = (state = initialState, action) => {
     case COMPLETE_LOADING:
       return Object.assign({...state}, {
         isLoadingComplete: true
-      });
-
-    case COMPLETE_LOGIN:
-      return Object.assign({...state}, {
-        socialId: action.id
-      });
-
-    case LOGOUT:
-      return Object.assign({...state}, {
-        socialId: null
       });
 
     case SELECT_IMAGE:

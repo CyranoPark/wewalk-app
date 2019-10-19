@@ -72,7 +72,7 @@ const tabNavigator = createBottomTabNavigator({
   RecordStack,
   ProfileStack,
 },{
-  initialRouteName: 'HomeStack'
+  initialRouteName: 'RecordStack'
 });
 
 tabNavigator.path = '';
