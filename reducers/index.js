@@ -1,8 +1,13 @@
-import { COMPLETE_LOADING, COMPLETE_LOGIN, LOGOUT, SELECT_IMAGE, INIT_RECORDING, START_RECORDING, END_RECORDING } from '../constants/actionType';
+import {
+  COMPLETE_LOADING,
+  INIT_RECORDING,
+  START_RECORDING,
+  END_RECORDING
+} from '../constants/actionType';
 
 const initialState = {
   isLoadingComplete: false,
-  selectedImage: null,
+  isLoadingRecord: false,
   recordingStatus: 'BEFORE_RECORDING'
 };
 
@@ -11,11 +16,6 @@ export default reducer = (state = initialState, action) => {
     case COMPLETE_LOADING:
       return Object.assign({...state}, {
         isLoadingComplete: true
-      });
-
-    case SELECT_IMAGE:
-      return Object.assign({...state}, {
-        selectedImage: action.imageUrl
       });
 
     case INIT_RECORDING:
@@ -31,6 +31,16 @@ export default reducer = (state = initialState, action) => {
     case END_RECORDING:
       return Object.assign({...state}, {
         recordingStatus: 'AFTER_RECORDING'
+      });
+
+    case 'LOADING_RECORD_SCREEN':
+      return Object.assign({...state}, {
+        isLoadingRecord: true
+      });
+
+    case 'COMPLETE_LOADING_RECORD_SCREEN':
+      return Object.assign({...state}, {
+        isLoadingRecord: false
       });
 
     default:

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Container, Icon, Button, Text, Content } from 'native-base';
 import * as SecureStore from 'expo-secure-store';
-import HeaderArea from '../components/HeaderArea';
 import authConstans from '../constants/auth';
 import colorConstans from '../constants/Colors';
 import axios from 'axios';
@@ -30,8 +29,7 @@ export default ProfileScreen = props => {
   };
 
   return (
-    <Container>
-      <HeaderArea name='Profile' />
+    <>
       <Content
         contentContainerStyle={{
           alignItems:'center',
@@ -47,6 +45,6 @@ export default ProfileScreen = props => {
           <Text>Logout</Text>
         </Button>
       </Content>
-    </Container>
+    </>
   );
 };

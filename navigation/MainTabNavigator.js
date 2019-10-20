@@ -1,26 +1,36 @@
 import React from 'react';
 import { Platform } from 'react-native';
+import { Constants } from 'expo';
 import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import FeedScreen from '../screens/FeedScreen';
+import MyCourseScreen from '../screens/MyCourseScreen';
 import RecordNavigator from './RecordNavigator';
 import ProfileScreen from '../screens/ProfileScreen';
+import HeaderArea from '../components/HeaderArea';
+import colorConstans from '../constants/Colors';
 
 const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
+  headerMode: 'none'
 });
 
-const HomeStack = createStackNavigator(
+const FeedStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Feed: {
+      screen: FeedScreen,
+      navigationOptions: {
+        title: 'Feed'
+      }
+    }
   },
   config
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+FeedStack.navigationOptions = {
+  tabBarLabel: 'Feed',
+  headerTitle: 'Feed',
+  drawerWidth: 300,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -33,7 +43,7 @@ HomeStack.navigationOptions = {
   ),
 };
 
-HomeStack.path = '';
+FeedStack.path = '';
 
 const RecordStack = createSwitchNavigator(
   {
@@ -51,9 +61,44 @@ RecordStack.navigationOptions = {
 
 RecordStack.path = '';
 
+
+const myCourseStack = createStackNavigator(
+  {
+    MyCourse: {
+      screen: MyCourseScreen,
+      navigationOptions: {
+        title: 'My Course'
+      }
+    }
+  },
+  config
+);
+
+myCourseStack.navigationOptions = {
+  tabBarLabel: 'myCourse',
+  drawerWidth: 300,
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === 'ios'
+          ? `ios-information-circle${focused ? '' : '-outline'}`
+          : 'md-information-circle'
+      }
+    />
+  ),
+};
+
+myCourseStack.path = '';
+
 const ProfileStack = createStackNavigator(
   {
-    Profile: ProfileScreen,
+    Profile: {
+      screen: ProfileScreen,
+      navigationOptions: {
+        title: 'Profile'
+      }
+    },
   },
   config
 );
@@ -68,11 +113,12 @@ ProfileStack.navigationOptions = {
 ProfileStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack,
+  FeedStack,
   RecordStack,
+  myCourseStack,
   ProfileStack,
 },{
-  initialRouteName: 'RecordStack'
+  initialRouteName: 'FeedStack'
 });
 
 tabNavigator.path = '';

@@ -1,36 +1,35 @@
 import axios from 'axios';
-import moment from 'moment'
+import moment from 'moment';
 
-export const calculateElevation = (prevCoords, curCoords) => {
-  const prevLocation = [ prevCoords.latitude, prevCoords.longitude ].join(',');
-  const curLocation = [ curCoords.latitude, curCoords.longitude ].join(',');
+export const calculateElevation = (prev, current) => {
+  const prevLocation = [ prev.coordinates[1], prev.coordinates[0] ].join(',');
+  const curLocation = [ current.coordinates[1], current.coordinates[0] ].join(',');
   return axios.get('https://maps.googleapis.com/maps/api/elevation/json',{
     params: {
       locations: `${prevLocation}|${curLocation}`,
       key: process.env.GOOGLE_MAP_API_KEY
     }
   }).then(({ data }) => {
-    if (data.results[1] - data.results[0] > 0) {
-      return res.data.results
+    if (data.results[1].elevation - data.results[0].elevation > 0) {
+      return data.results[1].elevation - data.results[0].elevation
     }
     return 0;
   });
 };
 
-export const calculateDistance = (prevCoords, curCoords) => {
-  const prevLocation = [ prevCoords.latitude, prevCoords.longitude ].join(',');
-  const curLocation = [ curCoords.latitude, curCoords.longitude ].join(',');
-  return axios.get('https://maps.googleapis.com/maps/api/directions/json',{
+
+export const calculateDistance = (prev, current) => {
+  const prevLocation = [ prev.coordinates[1], prev.coordinates[0] ].join(',');
+  const curLocation = [ current.coordinates[1], current.coordinates[0] ].join(',');
+  return axios.get('https://maps.googleapis.com/maps/api/distancematrix/json',{
     params: {
-      origin: prevLocation,
-      destination: curLocation,
-      key: process.env.GOOGLE_MAP_API_KEY
+      origins: prevLocation,
+      destinations: curLocation,
+      key: process.env.GOOGLE_MAP_API_KEY,
+      mode: 'transit'
     }
   }).then(({ data }) =>{
-    if (data.status === 'ZERO_RESULTS') {
-      return 0;
-    }
-    return data.routes[0].legs[0].distance.value;
+    return data.rows[0].elements[0].distance.value;
   })
 };
 
@@ -67,7 +66,7 @@ export const changeRecordTimeFormat = (startTime, endTime) => {
   const startMoment = moment(startTime);
   const currentMoment = moment(endTime) || moment(new Date());
 
-  return currentMoment.diff(startMoment, 'minutes');
+  return moment.utc(currentMoment.diff(startMoment)).format('HH:mm:ss');
 };
 
 export const changeSpotTimeFormat = (startTime, spotTime) => {
@@ -79,11 +78,13 @@ export const changeSpotTimeFormat = (startTime, spotTime) => {
 
 export const createFormData = image => {
   const data = new FormData();
+  const uriParts = image.uri.split('.');
+  const fileType = uriParts[uriParts.length - 1];
 
   data.append('file', {
     uri: image.uri,
     name: image.uri.split('/').pop(),
-    type: image.type
+    type: `image/${fileType}`
   });
 
   return data;

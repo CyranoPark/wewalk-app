@@ -1,8 +1,9 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, TextInput } from 'react-native'
 import { Container, Button, Text } from "native-base";
 import Course from '../components/Course';
 import colorConstans from '../constants/Colors';
+import CourseRegistration from '../components/CourseRegistration';
 
 export default RecordResultScreen = props => {
   const { onRecordInitButtonPress, totalCourseData, startLocation, currentLocation, totalCoursePath, totalCourseImages } = props;
@@ -23,13 +24,9 @@ export default RecordResultScreen = props => {
             }}>
             Record Result
           </Text>
-          <Button
-            primary
-            onPress={onRecordInitButtonPress}
-            style={{ textAlign: 'center', backgroundColor: colorConstans.mainColor}}
-          >
-            <Text>Go to Start</Text>
-          </Button>
+          <View style={{ height: 200 }} >
+            <CourseRegistration onRecordInitButtonPress={onRecordInitButtonPress} />
+          </View>
           <Course
             totalCourseData={totalCourseData}
             totalCoursePath={totalCoursePath}

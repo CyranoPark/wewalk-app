@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 import { Container, Button, Text, Fab, Icon } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
 import Map from '../components/Map';
-
 import {
   changeElevationFormat,
   changeDistanceFormat,
@@ -24,15 +23,16 @@ export default RecordScreen = props => {
   } = props;
 
   const pickImage = async () => {
-    const image = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      base64: true,
-      aspect: [4, 3],
-    });
-
-    if (!image.cancelled) {
-      onPickImage(image);
+    try {
+      const image = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (!image.cancelled) {
+        onPickImage(image);
+      }
+    } catch (error) {
+      console.log(error.message)
     }
   };
 
@@ -77,7 +77,6 @@ export default RecordScreen = props => {
             <Text style={styles.titleText}>Total Time</Text>
             <Text style={styles.dataText}>
               {changeRecordTimeFormat(startLocation.timestamp)}
-              <Text style={styles.text}>min</Text>
             </Text>
           </View>
         </View>

@@ -17,7 +17,7 @@ const AppNavigator = createAppContainer(
   })
 );
 
-const AppContainer = (props) => {
+const AppContainer = props => {
   return (
     <AppNavigator
       screenProps={
@@ -30,19 +30,22 @@ const AppContainer = (props) => {
 }
 
 const mapStateToProps = state => {
-  const { isLoadingComplete, recordingStatus } = state;
+  const { isLoadingComplete, recordingStatus, isLoadingRecord } = state;
 
   return {
     isLoadingComplete,
-    recordingStatus
+    recordingStatus,
+    isLoadingRecord
   };
 }
 
 const mapDispatchToProps = dispatch => ({
   completeAppLoading: () => dispatch({ type: 'COMPLETE_LOADING' }),
-  onRecordStartButtonPress: () => dispatch({ type: 'START_RECORDING' }),
-  onRecordEndButtonPress: () => dispatch({ type: 'END_RECORDING' }),
-  onRecordInitButtonPress: () => dispatch({ type: 'INIT_RECORDING' })
+  onLoadingRecordScreen: () => dispatch({ type: 'LOADING_RECORD_SCREEN' }),
+  onLoadingRecordScreenComplete: () => dispatch({ type: 'COMPLETE_LOADING_RECORD_SCREEN' }),
+  onRecordStart: () => dispatch({ type: 'START_RECORDING' }),
+  onRecordEnd: () => dispatch({ type: 'END_RECORDING' }),
+  onRecordInitialize: () => dispatch({ type: 'INIT_RECORDING' })
 });
 
 export default ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppContainer);

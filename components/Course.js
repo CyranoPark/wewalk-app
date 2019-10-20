@@ -6,8 +6,7 @@ import Map from './Map';
 import {
   changeElevationFormat,
   changeDistanceFormat,
-  changeRecordTimeFormat,
-  changeSpotTimeFormat
+  changeRecordTimeFormat
 } from '../utils/index';
 
 const Course = props => {
@@ -30,11 +29,11 @@ const Course = props => {
         <Card key={i}>
           <CardItem header>
             <Text style={{ color: colorConstans.mainColor }}>
-              {changeSpotTimeFormat(startLocation.timestamp, spot.location.timestamp)}
+              {changeRecordTimeFormat(startLocation.timestamp, spot.location.timestamp)}
             </Text>
           </CardItem>
           <CardItem cardBody style={styles.courseData}>
-          <Image source={{uri: spot.image_url}} style={{height: 200, width: null, flex: 1}} />
+            <Image source={{uri: spot.image_url}} style={{height: 200, width: null, flex: 1}} />
           </CardItem>
         </Card>
       );
@@ -69,7 +68,6 @@ const Course = props => {
               <Text style={styles.titleText}>Total Time</Text>
               <Text style={styles.dataText}>
                 {changeRecordTimeFormat(totalCourseData.start_location.timestamp, endTime)}
-                <Text style={styles.text}>min</Text>
               </Text>
             </View>
           </View>
@@ -105,14 +103,14 @@ const Course = props => {
 
 const styles = StyleSheet.create({
   courseDataCard: {
-    width: '90%',
+    width: '95%',
   },
   subDataCard: {
     width: '100%',
   },
   courseMap: {
     width: '100%',
-    height: 200
+    height: 300
   },
   courseData:{
     width: '100%',
