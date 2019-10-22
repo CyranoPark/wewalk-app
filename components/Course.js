@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import { Card, CardItem, Text } from "native-base";
+import { Card, CardItem, Text } from 'native-base';
 import colorConstans from '../constants/Colors';
 import Map from './Map';
 import {
@@ -10,7 +10,7 @@ import {
 } from '../utils/index';
 
 const Course = props => {
-  const { totalCourseData, startLocation, currentLocation, totalCoursePath, totalCourseImages } = props;
+  const { totalCourseData } = props;
   const lastLocation = totalCourseData.path[totalCourseData.path.length - 1];
   const endTime = lastLocation.timestamp;
 
@@ -22,14 +22,14 @@ const Course = props => {
             No Images..
           </Text>
         </CardItem>
-      )
+      );
     }
     return spots.map((spot, i) => {
       return (
         <Card key={i}>
           <CardItem header>
             <Text style={{ color: colorConstans.mainColor }}>
-              {changeRecordTimeFormat(startLocation.timestamp, spot.location.timestamp)}
+              {changeRecordTimeFormat(totalCourseData.start_location.timestamp, spot.location.timestamp)}
             </Text>
           </CardItem>
           <CardItem cardBody style={styles.courseData}>
@@ -82,10 +82,10 @@ const Course = props => {
         <CardItem bordered style={styles.courseMap}>
           <Map
             style={styles.mapview}
-            startLocation={startLocation}
-            currentLocation={currentLocation}
-            totalCoursePath={totalCoursePath}
-            totalCourseImages={totalCourseImages}
+            startLocation={totalCourseData.start_location}
+            currentLocation={lastLocation}
+            totalCoursePath={totalCourseData.path}
+            totalCourseImages={totalCourseData.images_by_location}
           />
         </CardItem>
       </Card>
@@ -95,7 +95,7 @@ const Course = props => {
             Time Line
           </Text>
         </CardItem>
-          {renderImagesByLocation(totalCourseImages)}
+        {renderImagesByLocation(totalCourseData.images_by_location)}
       </Card>
     </>
   );
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   dataText: {
-    fontSize: 30,
+    fontSize: 25,
     color: 'green',
     fontWeight: 'bold',
     textAlign: 'center',

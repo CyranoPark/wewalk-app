@@ -6,13 +6,13 @@ import { createStore } from 'redux';
 import reducer from './reducers';
 import React from 'react';
 
-import AppNavigator from './navigation/AppNavigator';
+import AppContainer from './container/App';
 
 const store = createStore(reducer);
 
 export default App = () => (
   <Provider store={store}>
-    <AppNavigator />
+    <AppContainer />
   </Provider>
 );
 

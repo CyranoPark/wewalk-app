@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
-import { Container, Header, Left, Right, Body, Button, Item, Picker, Text } from 'native-base';
+import { Button, Picker, Text } from 'native-base';
 import colorConstans from '../constants/Colors';
 
 const CourseRegistration = (props) => {

@@ -13,3 +13,4 @@ web-report/
 .DS_store
 .env
 environment.js
+.eslintrc.js

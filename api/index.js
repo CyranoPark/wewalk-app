@@ -39,10 +39,26 @@ export const loginWithFacebook = async () => {
   }
 };
 
-export const getCoursesByLocation = async (pageNo, pageSize) => {
+export const logoutAsync = async () => {
+  const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+  await axios.post(
+    `${process.env.API_URL}/logout`,
+    {},
+    {
+      headers: {
+        'content-type': 'application/json',
+        userToken: 'Bearer ' + userToken
+      }
+    },
+  ).then(async () => {
+    await SecureStore.deleteItemAsync(authConstans.FBTOKEN);
+    await SecureStore.deleteItemAsync(authConstans.USERTOKEN);
+  });
+};
+
+export const getCoursesByLocation = async (pageNo, pageSize, currentLocation) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
-  const { coords } = await Location.getCurrentPositionAsync();
 
   return axios.get(
     `${process.env.API_URL}/course`,
@@ -50,9 +66,24 @@ export const getCoursesByLocation = async (pageNo, pageSize) => {
       params: {
         pageNo,
         pageSize,
-        lon: coords.longitude,
-        lat: coords.latitude
+        lon: currentLocation[0],
+        lat: currentLocation[1]
       },
+      headers: {
+        userToken: 'Bearer ' + userToken,
+        socialId
+      }
+    },
+  ).then(res => res.data);
+};
+
+export const getMyCourses = async () => {
+  const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
+
+  return axios.get(
+    `${process.env.API_URL}/course/my`,
+    {
       headers: {
         userToken: 'Bearer ' + userToken,
         socialId

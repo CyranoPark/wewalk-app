@@ -6,7 +6,7 @@ import RecordScreen from '../screens/RecordScreen';
 import RecordResultScreen from '../screens/RecordResultScreen';
 
 import { postCurrentPath, postImageByLocation, getImageUrl, getCourseData, postInitCourse, updateCourseInfo } from '../api';
-import { calculateElevation, calculateDistance, createFormData } from '../utils';
+import { calculateElevation, calculateDistance, createFormData, getAddress } from '../utils';
 import mockData from '../constants/locationData';
 
 class RecordNavigator extends Component {
@@ -80,15 +80,18 @@ class RecordNavigator extends Component {
       onRecordStart,
       onLoadingRecordScreen,
       onLoadingRecordScreenComplete
-    } = this.props.screenProps.props;
+    } = this.props.screenProps;
 
     onLoadingRecordScreen();
-    const currentCoords = await Location.getCurrentPositionAsync({});
+    const currentLocation = await Location.getCurrentPositionAsync({});
+    const currentCoordinates = [ currentLocation.coords.longitude, currentLocation.coords.latitude ]
     const startLocation = {
       type: 'Point',
-      coordinates: [ currentCoords.coords.longitude, currentCoords.coords.latitude ],
+      coordinates: currentCoordinates,
+      address: await getAddress(currentCoordinates),
       timestamp: new Date().toISOString()
     };
+
     const initialCourseData = await postInitCourse(startLocation);
 
     this.setState({
@@ -109,7 +112,7 @@ class RecordNavigator extends Component {
     const courseRecodingTimer = async () => {
       const {
         recordingStatus
-      } = this.props.screenProps.props;
+      } = this.props.screenProps;
       if (recordingStatus === 'RECORDING') {
         await this.recordCourse();
         if (this.state.savedCoordinates.length === 10) {
@@ -122,7 +125,7 @@ class RecordNavigator extends Component {
   };
 
   onEndRecording = async () => {
-    const { onRecordEnd } = this.props.screenProps.props;
+    const { onRecordEnd } = this.props.screenProps;
     await this.addCurrentPath();
     const courseData = await getCourseData(this.state.courseId);
 
@@ -134,7 +137,7 @@ class RecordNavigator extends Component {
   };
 
   initializeStateData = async (title, description, isPublic) => {
-    const { onRecordInitialize } = this.props.screenProps.props;
+    const { onRecordInitialize } = this.props.screenProps;
     await updateCourseInfo(this.state.courseId, title, description, isPublic)
     onRecordInitialize();
     this.setState({
@@ -162,7 +165,7 @@ class RecordNavigator extends Component {
       totalCourseData
     } = this.state;
 
-    const { recordingStatus, isLoadingRecord } = this.props.screenProps.props;
+    const { recordingStatus, isLoadingRecord } = this.props.screenProps;
 
     switch (recordingStatus) {
       case 'RECORDING':

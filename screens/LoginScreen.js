@@ -5,16 +5,15 @@ import colorConstans from '../constants/Colors';
 import { loginWithFacebook } from '../api';
 
 export default LoginScreen = props => {
-  const { navigation } = props;
 
-  const onLoginPress = async () => {
+  const onLoginButtonPress = async () => {
     try {
       const user = await loginWithFacebook();
 
       Alert.alert('Logged in!', `Hi ${user.name}!`);
-      navigation.navigate('Main');
+      props.navigation.navigate('Main');
     } catch ({ message }) {
-      alert(`Facebook Login Error: ${message}`);
+      Alert.Buttonalert(`Facebook Login Error: ${message}`);
     }
   };
 
@@ -22,19 +21,13 @@ export default LoginScreen = props => {
     <Container style={styles.container}>
       <View>
         <Text
-          style={{
-            color: colorConstans.mainColor,
-            fontSize: 40,
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginBottom: 50
-          }}>
+          style={styles.titleText}>
           WE WALK
         </Text>
         <Button
           primary
-          onPress={onLoginPress}
-          style={{backgroundColor: colorConstans.facebookDefaultColor}}
+          onPress={onLoginButtonPress}
+          style={styles.loginButton}
         >
           <Icon name="logo-facebook" />
           <Text>Facebook Login</Text>
@@ -49,5 +42,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleText: {
+    color: colorConstans.mainColor,
+    fontSize: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 50
+  },
+  loginButton: {
+    backgroundColor: colorConstans.facebookDefaultColor,
+    borderRadius: 5
   }
 });

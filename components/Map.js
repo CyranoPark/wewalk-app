@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Image } from 'react-native';
-import MapView, { Polyline, Marker ,PROVIDER_GOOGLE, AnimatedRegion, Animated } from 'react-native-maps';
+import MapView, { Polyline, Marker ,PROVIDER_GOOGLE } from 'react-native-maps';
+import { changeCoordinateData } from '../utils';
 
 const Map = props => {
   const { totalCoursePath, startLocation, currentLocation, totalCourseImages } = props;
@@ -13,30 +14,16 @@ const Map = props => {
       longitudeDelta: 0.003
     };
   };
-  const renderStartLocation = () =>{
-    return {
-      latitude: startLocation.coordinates[1],
-      longitude: startLocation.coordinates[0]
-    };
-  };
 
   const renderTotalCourse = () => {
-    return totalCoursePath.map((path, i) => {
-      return {
-        latitude: path.coordinates[1],
-        longitude: path.coordinates[0],
-      };
-    });
+    return totalCoursePath.map(path => changeCoordinateData(path));
   };
 
   const renderImageMarker = () => {
     return totalCourseImages.map((image, i) => {
       return (
         <Marker
-          coordinate={{
-            latitude: image.location.coordinates[1],
-            longitude: image.location.coordinates[0]
-          }}
+          coordinate={changeCoordinateData(image.location)}
           key={i}
         >
           <Image
@@ -51,7 +38,7 @@ const Map = props => {
   return (
     <MapView
       provider={PROVIDER_GOOGLE}
-      style={ { width:"100%", height:"100%" } }
+      style={ { width:'100%', height:'100%' } }
       initialRegion={{
         latitude: currentLocation.coordinates[1],
         longitude: currentLocation.coordinates[0],
@@ -61,7 +48,7 @@ const Map = props => {
       region={renderCurrentLocation()}
     >
       <Marker
-        coordinate={renderStartLocation()}
+        coordinate={changeCoordinateData(startLocation)}
         title={'Start!'}
         description={'your start Point'}
       />
@@ -73,14 +60,12 @@ const Map = props => {
       {renderImageMarker() || <></>}
       <Polyline
         coordinates={renderTotalCourse()}
-        strokeColor="#7F0000" // fallback for when `strokeColors` is not supported by the map-provider
+        strokeColor='#7F0000' // fallback for when `strokeColors` is not supported by the map-provider
         strokeWidth={5}
       />
     </MapView>
   );
 };
-
-export default Map;
 
 const styles = StyleSheet.create({
   image: {
@@ -91,3 +76,5 @@ const styles = StyleSheet.create({
     borderColor: '#454d5d'
   },
 });
+
+export default Map;

@@ -26,7 +26,7 @@ export default ProfileScreen = props => {
       await SecureStore.deleteItemAsync(authConstans.USERTOKEN);
       props.navigation.navigate('Login');
     });
-  };
+  }
 
   return (
     <>

@@ -1,6 +1,18 @@
 import axios from 'axios';
 import moment from 'moment';
 
+export const getAddress = currentLocation => {
+  const currentCoords = [ currentLocation[1], currentLocation[0] ].join(',');
+  return axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
+    params: {
+      latlng: currentCoords,
+      key: process.env.GOOGLE_MAP_API_KEY
+    }
+  }).then(({ data }) => {
+    return data.results[0].formatted_address
+  });
+};
+
 export const calculateElevation = (prev, current) => {
   const prevLocation = [ prev.coordinates[1], prev.coordinates[0] ].join(',');
   const curLocation = [ current.coordinates[1], current.coordinates[0] ].join(',');
@@ -30,29 +42,15 @@ export const calculateDistance = (prev, current) => {
     }
   }).then(({ data }) =>{
     return data.rows[0].elements[0].distance.value;
-  })
+  });
 };
 
-/*
-Object {
-  "destination_addresses": Array [
-    "37.5059945,127.0591692",
-  ],
-  "origin_addresses": Array [
-    "37.5059947,127.0591692",
-  ],
-  "rows": Array [
-    Object {
-      "elements": Array [
-        Object {
-          "status": "ZERO_RESULTS",
-        },
-      ],
-    },
-  ],
-  "status": "OK",
-}
-*/
+export const changeCoordinateData = location => {
+  return {
+    latitude: location.coordinates[1],
+    longitude: location.coordinates[0]
+  };
+};
 
 export const changeElevationFormat = elevation => {
   return Math.round(elevation);
@@ -74,6 +72,12 @@ export const changeSpotTimeFormat = (startTime, spotTime) => {
   const currentMoment = moment(spotTime);
 
   return moment.utc(currentMoment.diff(startMoment)).format('HH:mm:ss');
+};
+
+export const changeDateFormat = date => {
+  const startMoment = moment(date);
+
+  return moment.utc(startMoment).format('YYYY년 MM월 DD일');
 };
 
 export const createFormData = image => {
