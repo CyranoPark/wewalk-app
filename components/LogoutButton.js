@@ -2,22 +2,14 @@ import React from 'react';
 import { Text } from 'react-native';
 import { Button } from 'native-base';
 
-import { logoutAsync } from '../api';
-
 import colorConstans from '../constants/Colors';
 
-const LogoutHeader = props => {
-
-  const logout = async () => {
-    await logoutAsync();
-    props.navigation.navigate('Login');
-  };
-
+const LogoutButton = props => {
   return (
     <Button
       transparent
       style={{ marginRight: 10 }}
-      onPress={logout}
+      onPress={props.onLogoutButtonClick}
     >
       <Text
         style={{
@@ -32,4 +24,4 @@ const LogoutHeader = props => {
   );
 };
 
-export default LogoutHeader;
+export default LogoutButton;

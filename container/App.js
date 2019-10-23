@@ -9,7 +9,8 @@ import {
   COMPLETE_LOADING_RECORD_SCREEN,
   START_RECORDING,
   END_RECORDING,
-  INIT_RECORDING
+  INIT_RECORDING,
+  INIT_STATE
 } from '../constants/actionType';
 
 const mapStateToProps = state => {
@@ -28,7 +29,8 @@ const mapDispatchToProps = dispatch => ({
   onLoadingRecordScreenComplete: () => dispatch({ type: COMPLETE_LOADING_RECORD_SCREEN }),
   onRecordStart: () => dispatch({ type: START_RECORDING }),
   onRecordEnd: () => dispatch({ type: END_RECORDING }),
-  onRecordInitialize: () => dispatch({ type: INIT_RECORDING })
+  onRecordInitialize: () => dispatch({ type: INIT_RECORDING }),
+  initializeState: () => dispatch({ type: INIT_STATE })
 });
 
 const AppContainer = props => {

@@ -1,13 +1,33 @@
+import React from 'react';
+import { Alert } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 
-const RootNavigator = createSwitchNavigator(
+import { loginWithFacebook } from '../api';
+
+const LoginContainer = props => {
+  const facebookLogin = async () => {
+    try {
+      const user = await loginWithFacebook();
+      console.log(user);
+      Alert.alert('Logged in!', `Hi ${user.name}!`);
+      props.navigation.navigate('Main');
+    } catch ({ message }) {
+      Alert.alert(`Facebook Login Error: ${message}`);
+    }
+  };
+  return (
+    <LoginScreen onLoginButtonPress={facebookLogin} />
+  );
+};
+
+const AppNavigator = createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    Login: LoginScreen,
+    Login: LoginContainer,
     Main: MainTabNavigator,
   },
   {
@@ -15,4 +35,4 @@ const RootNavigator = createSwitchNavigator(
   }
 );
 
-export default createAppContainer(RootNavigator);
+export default createAppContainer(AppNavigator);

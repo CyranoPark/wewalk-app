@@ -81,14 +81,12 @@ const styles = StyleSheet.create({
     width: '80%',
     padding: 10,
     justifyContent: 'center',
-    // alignItems: 'center',
     flexDirection: 'column',
   },
   locationText: {
     fontSize: 15,
     color: colorConstans.tintTextColor,
     fontWeight: 'bold',
-    // textAlign: 'center',
     fontStyle: 'italic'
   },
   infoText: {

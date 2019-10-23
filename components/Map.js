@@ -8,21 +8,30 @@ const hereMarker = Asset.fromModule(require('../assets/images/heremarker.png')).
 const startMarker = Asset.fromModule(require('../assets/images/startmarker.png')).uri;
 
 const Map = props => {
-  const [ delta, setDelta ] = useState({
+  const {
+    totalCoursePath,
+    startLocation,
+    currentLocation,
+    totalCourseImages
+  } = props;
+  const [ location, setLocation ] = useState({
+    latitude: currentLocation.coordinates[1],
+    longitude: currentLocation.coordinates[0],
     latitudeDelta: 0.01,
     longitudeDelta: 0.01
   });
-  const { totalCoursePath, startLocation, currentLocation, totalCourseImages } = props;
 
-  const setCurrentDelta = (region) => {
-    setDelta({
+  const setCurrentLocation = region => {
+    setLocation({
+      latitude: region.latitude,
+      longitude: region.longitude,
       latitudeDelta: region.latitudeDelta,
       longitudeDelta: region.longitudeDelta
     });
   };
 
   const renderCurrentLocation = () => {
-    const { latitudeDelta, longitudeDelta } = delta;
+    const { latitudeDelta, longitudeDelta } = location;
     return {
       latitude: currentLocation.coordinates[1],
       longitude: currentLocation.coordinates[0],
@@ -58,11 +67,11 @@ const Map = props => {
       initialRegion={{
         latitude: currentLocation.coordinates[1],
         longitude: currentLocation.coordinates[0],
-        latitudeDelta: delta.latitudeDelta,
-        longitudeDelta: delta.longitudeDelta
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01
       }}
-      region={renderCurrentLocation()}
-      onRegionChangeComplete={setCurrentDelta}
+      region={location}
+      onRegionChangeComplete={setCurrentLocation}
     >
       <Marker
         coordinate={changeCoordinateData(startLocation)}
@@ -76,8 +85,8 @@ const Map = props => {
       </Marker>
       <Marker
         coordinate={renderCurrentLocation()}
-        title={'Start!'}
-        description={'your start Point'}
+        title={'Here!'}
+        description={'you are Here'}
       >
         <Image
           source={{uri: hereMarker}}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FlatList, Text } from 'react-native';
+import { Spinner } from 'native-base';
 
 import MyCourseListItem from '../components/MyCourseListItem';
 import { getMyCourses, updateCourseInfo, deleteCourse } from '../api';
@@ -15,13 +16,13 @@ export default class MyCourseScreen extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      isLoading: true
-    });
     this.handleLoadMyCourse();
   }
 
   handleLoadMyCourse = async () => {
+    this.setState({
+      isLoading: true
+    });
     await getMyCourses()
       .then(courses => {
         this.setState({
@@ -51,7 +52,6 @@ export default class MyCourseScreen extends Component {
     } catch (error) {
       alert('update failed');
     }
-    await this.handleLoadMyCourse();
   };
 
   deleteCourse = async courseId => {
@@ -65,10 +65,9 @@ export default class MyCourseScreen extends Component {
   };
 
   render() {
-    console.log(!this.state.myCourses.length);
-    if (!this.state.myCourses.length) {
+    if (this.state.isLoading) {
       return (
-        <Text>Nothing..</Text>
+        <Spinner />
       );
     }
     return (

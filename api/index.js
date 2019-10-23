@@ -2,9 +2,11 @@ import * as Facebook from 'expo-facebook';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import authConstans from '../constants/auth';
+import getEnvVars from '../environment';
+const { API_URL, FB_API_KEY } = getEnvVars();
 
 export const loginWithFacebook = async () => {
-  const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(process.env.FB_API_KEY, {
+  const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(FB_API_KEY, {
     permissions: ['public_profile'],
   });
 
@@ -22,7 +24,7 @@ export const loginWithFacebook = async () => {
 
   function getUserToken(user) {
     return axios.post(
-      `${process.env.API_URL}/login/facebook`,
+      `${API_URL}/auth/login/facebook`,
       {
         socialService: authConstans.SOCIAL_SERVICE[0],
         socialId: user.id,
@@ -35,15 +37,14 @@ export const loginWithFacebook = async () => {
         }
       },
     )
-      .then(data => data.headers.usertoken)
-      .catch(err => console.log(err.message));
+      .then(data => data.headers.usertoken);
   }
 };
 
 export const logoutAsync = async () => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   await axios.post(
-    `${process.env.API_URL}/logout`,
+    `${API_URL}/auth/logout`,
     {},
     {
       headers: {
@@ -62,7 +63,7 @@ export const getCoursesByLocation = async (pageNo, pageSize, currentLocation) =>
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
   return axios.get(
-    `${process.env.API_URL}/course`,
+    `${API_URL}/feeds`,
     {
       params: {
         pageNo,
@@ -83,7 +84,7 @@ export const getMyCourses = async () => {
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
   return axios.get(
-    `${process.env.API_URL}/course/my`,
+    `${API_URL}/mycourses`,
     {
       headers: {
         userToken: 'Bearer ' + userToken,
@@ -97,7 +98,7 @@ export const postInitCourse = async (startLocation) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
   return await axios.post(
-    `${process.env.API_URL}/course/new`,
+    `${API_URL}/course/new`,
     {
       startLocation
     },
@@ -108,10 +109,10 @@ export const postInitCourse = async (startLocation) => {
         socialId
       }
     },
-  ).then(res => res.data).catch(err => console.log(err.message));
+  ).then(res => res.data);
 };
 
-export const postCurrentPath = async (courseId, path, distance, elevation) => {
+export const updateCurrentPath = async (courseId, path, distance, elevation) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
@@ -122,7 +123,7 @@ export const postCurrentPath = async (courseId, path, distance, elevation) => {
       timestamp: location.timestamp
     };
   });
-  return axios.post(`${process.env.API_URL}/course/${courseId}/path`,
+  return axios.put(`${API_URL}/course/${courseId}/path`,
     {
       path: locations,
       distance,
@@ -137,12 +138,12 @@ export const postCurrentPath = async (courseId, path, distance, elevation) => {
     }).then(res => res.data);
 };
 
-export const postImageByLocation = async (location, courseId, imageUrl) => {
+export const updateImageByLocation = async (location, courseId, imageUrl) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
-  return axios.post(
-    `${process.env.API_URL}/course/${courseId}/image`,
+  return axios.put(
+    `${API_URL}/course/${courseId}/image`,
     {
       location,
       imageUrl
@@ -155,16 +156,15 @@ export const postImageByLocation = async (location, courseId, imageUrl) => {
       }
     },
   )
-    .then(res => res.data)
-    .catch(() => alert('failure save image'));
+    .then(res => res.data);
 };
 
-export const postThumbnailImage = async (courseId, imageUrl) => {
+export const updateThumbnailImage = async (courseId, imageUrl) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
-  return axios.post(
-    `${process.env.API_URL}/course/${courseId}/thumbnail`,
+  return axios.put(
+    `${API_URL}/course/${courseId}/thumbnail`,
     {
       imageUrl
     },
@@ -176,8 +176,7 @@ export const postThumbnailImage = async (courseId, imageUrl) => {
       }
     },
   )
-    .then(res => res.data)
-    .catch(() => alert('failure save image'));
+    .then(res => res.data);
 };
 
 
@@ -185,7 +184,7 @@ export const getImageUrl = async (courseId, imageData) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
   return axios.post(
-    `${process.env.API_URL}/course/${courseId}/image/upload`,
+    `${API_URL}/course/${courseId}/image/upload`,
     imageData,
     {
       headers: {
@@ -194,9 +193,7 @@ export const getImageUrl = async (courseId, imageData) => {
         socialId
       }
     },
-  )
-    .then(({ data }) => data.imageUrl)
-    .catch(err => console.log('upload error', err.message));
+  ).then(({ data }) => data.imageUrl);
 };
 
 export const getCourseData = async courseId => {
@@ -204,7 +201,7 @@ export const getCourseData = async courseId => {
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
   return axios.get(
-    `${process.env.API_URL}/course/${courseId}`,
+    `${API_URL}/course/${courseId}`,
     {
       headers: {
         userToken: 'Bearer ' + userToken,
@@ -217,8 +214,8 @@ export const updateCourseInfo = async (courseId, title, description, isPublic) =
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
-  return axios.post(
-    `${process.env.API_URL}/course/${courseId}/info`,
+  return axios.put(
+    `${API_URL}/course/${courseId}/info`,
     {
       title,
       description,
@@ -239,7 +236,7 @@ export const deleteCourse = async courseId => {
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
   return axios.delete(
-    `${process.env.API_URL}/course/${courseId}`,
+    `${API_URL}/course/${courseId}`,
     {
       headers: {
         'Content-Type': 'application/json',

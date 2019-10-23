@@ -2,8 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Container, Button, Fab, Icon } from 'native-base';
 
-import * as ImagePicker from 'expo-image-picker';
-import ViewShot, { captureRef } from 'react-native-view-shot';
+import ViewShot from 'react-native-view-shot';
 
 import Map from '../components/Map';
 import {
@@ -22,47 +21,10 @@ const RecordScreen = props => {
     totalCourseImages,
     courseDistance,
     courseElevation,
-    onPickImage,
+    generateLibrary,
+    generateCamera,
     onRecordEndButtonPress
   } = props;
-
-  const pickImage = async () => {
-    try {
-      const image = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        aspect: [4, 3],
-      });
-      if (!image.cancelled) {
-        onPickImage(image);
-      }
-    } catch (err) {
-      alert(`Cannot pick Image : ${err.message}`);
-    }
-  };
-
-  const generateCamera = async () => {
-    try {
-      const image = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-      });
-
-      if (!image.cancelled) {
-        onPickImage(image);
-      }
-    } catch (err) {
-      alert(`Cannot generate Camera : ${err.message}`);
-    }
-  };
-
-  const takeSnapshot = async () => {
-    const snapShot = await captureRef(mapRef, {
-      format: 'jpg',
-      quality: 0.8
-    });
-    onRecordEndButtonPress(snapShot);
-  };
 
   return (
     <Container style={{ flex: 1, justifyContent:'center', height: '100%', position:'relative' }}>
@@ -110,7 +72,7 @@ const RecordScreen = props => {
           <Button onPress={generateCamera} style={{ backgroundColor: '#34A34F' }}>
             <Icon name="camera" />
           </Button>
-          <Button onPress={pickImage} style={{ backgroundColor: '#34A34F' }}>
+          <Button onPress={generateLibrary} style={{ backgroundColor: '#34A34F' }}>
             <Icon name="image" />
           </Button>
         </Fab>
@@ -120,7 +82,7 @@ const RecordScreen = props => {
           iconLeft
           danger
           style={styles.exitButton}
-          onPress={takeSnapshot}
+          onPress={() => onRecordEndButtonPress(mapRef)}
         >
           <Icon name='exit' />
           <Text style={{ color: 'white'}}>End Record</Text>

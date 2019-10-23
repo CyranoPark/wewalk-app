@@ -1,24 +1,13 @@
 import React from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { Container, Icon, Button, Text, View } from 'native-base';
-import * as SecureStore from 'expo-secure-store';
 
-import { loginWithFacebook } from '../api';
+
 
 import colorConstans from '../constants/Colors';
 
 const LoginScreen = props => {
-
-  const onLoginButtonPress = async () => {
-    try {
-      const user = await loginWithFacebook();
-
-      Alert.alert('Logged in!', `Hi ${user.name}!`);
-      props.navigation.navigate('Main');
-    } catch ({ message }) {
-      Alert.Buttonalert(`Facebook Login Error: ${message}`);
-    }
-  };
+  const { onLoginButtonPress } = props;
 
   return (
     <Container style={styles.container}>

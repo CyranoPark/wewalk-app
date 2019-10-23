@@ -5,10 +5,22 @@ import FeedScreen from '../screens/FeedScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
 import MyCourseScreen from '../screens/MyCourseScreen';
 import RecordNavigator from './RecordNavigator';
-import LogoutHeader from '../components/LogoutHeader';
+import LogoutButton from '../components/LogoutButton';
+
+import { logoutAsync } from '../api';
 
 import TabBarIcon from '../components/TabBarIcon';
 import colorConstans from '../constants/Colors';
+
+const LogoutHeader = props => {
+
+  const requestLogout = async () => {
+    await logoutAsync();
+    props.navigation.navigate('Login');
+  };
+
+  return <LogoutButton onLogoutButtonClick={requestLogout} />;
+};
 
 const FeedStack = createStackNavigator(
   {
@@ -52,7 +64,7 @@ FeedStack.path = '';
 
 const RecordStack = createSwitchNavigator(
   {
-    Record: RecordNavigator,
+    Record: RecordNavigator
   }
 );
 

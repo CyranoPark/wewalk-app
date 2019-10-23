@@ -1,5 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
+import getEnvVars from '../environment';
+const { GOOGLE_MAP_API_KEY } = getEnvVars();
 
 export const getAddress = currentLocation => {
   const currentCoords = [ currentLocation[1], currentLocation[0] ].join(',');
@@ -8,7 +10,7 @@ export const getAddress = currentLocation => {
     {
       params: {
         latlng: currentCoords,
-        key: process.env.GOOGLE_MAP_API_KEY
+        key: GOOGLE_MAP_API_KEY
       }
     }
   ).then(({ data }) => (
@@ -24,7 +26,7 @@ export const calculateElevation = (prev, current) => {
     {
       params: {
         locations: `${prevLocation}|${curLocation}`,
-        key: process.env.GOOGLE_MAP_API_KEY
+        key: GOOGLE_MAP_API_KEY
       }
     }
   ).then(({ data }) => {
@@ -37,21 +39,29 @@ export const calculateElevation = (prev, current) => {
 
 
 export const calculateDistance = (prev, current) => {
-  const prevLocation = [ prev.coordinates[1], prev.coordinates[0] ].join(',');
-  const curLocation = [ current.coordinates[1], current.coordinates[0] ].join(',');
-  return axios.get(
-    'https://maps.googleapis.com/maps/api/distancematrix/json',
-    {
-      params: {
-        origins: prevLocation,
-        destinations: curLocation,
-        key: process.env.GOOGLE_MAP_API_KEY,
-        mode: 'transit'
-      }
-    }
-  ).then(({ data }) => (
-    data.rows[0].elements[0].distance.value
-  ));
+  const prevLat = prev.coordinates[1];
+  const prevLng = prev.coordinates[0];
+  const currentLat = current.coordinates[1];
+  const currentLng = current.coordinates[0];
+
+  const degreesToRadians = degrees => {
+    return degrees * Math.PI / 180;
+  };
+  const R = 6378137;
+  const dLat = degreesToRadians(currentLat - prevLat);
+  const dLong = degreesToRadians(currentLng - prevLng);
+  const line =
+    Math.sin(dLat / 2) *
+    Math.sin(dLat / 2) +
+    Math.cos(degreesToRadians(prevLat)) *
+    Math.cos(degreesToRadians(prevLat)) *
+    Math.sin(dLong / 2) *
+    Math.sin(dLong / 2);
+
+  const adjust = 2 * Math.atan2(Math.sqrt(line), Math.sqrt(1 - line));
+  const distance = R * adjust;
+
+  return distance * 0.001;
 };
 
 export const changeCoordinateData = location => ({
@@ -59,11 +69,9 @@ export const changeCoordinateData = location => ({
   longitude: location.coordinates[0]
 });
 
-export const changeElevationFormat = elevation => Math.round(elevation);
+export const changeElevationFormat = elevation => Math.round(elevation * 100) / 100;
 
-export const changeDistanceFormat = distance => (
-  Math.round(distance / 100) * 100 / 1000
-);
+export const changeDistanceFormat = distance => Math.round(distance * 100) / 100;
 
 export const changeRecordTimeFormat = (startTime, endTime) => {
   const startMoment = moment(startTime);
