@@ -1,5 +1,4 @@
 import * as Facebook from 'expo-facebook';
-import * as Location from 'expo-location';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import authConstans from '../constants/auth';
@@ -8,6 +7,7 @@ export const loginWithFacebook = async () => {
   const { type, token: fbToken } = await Facebook.logInWithReadPermissionsAsync(process.env.FB_API_KEY, {
     permissions: ['public_profile'],
   });
+
   if (type === 'success') {
     const user = await axios.get(
       authConstans.FB_GRAPH_URL(fbToken)
@@ -34,8 +34,9 @@ export const loginWithFacebook = async () => {
           'content-type': 'application/json'
         }
       },
-    ).then(data => data.headers.usertoken)
-    .catch(err => console.log(err.message))
+    )
+      .then(data => data.headers.usertoken)
+      .catch(err => console.log(err.message));
   }
 };
 
@@ -108,7 +109,7 @@ export const postInitCourse = async (startLocation) => {
       }
     },
   ).then(res => res.data).catch(err => console.log(err.message));
-}
+};
 
 export const postCurrentPath = async (courseId, path, distance, elevation) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
@@ -128,11 +129,11 @@ export const postCurrentPath = async (courseId, path, distance, elevation) => {
       elevation
     },
     {
-     headers: {
-       'content-type': 'application/json',
+      headers: {
+        'content-type': 'application/json',
         userToken: 'Bearer ' + userToken,
         socialId
-     }
+      }
     }).then(res => res.data);
 };
 
@@ -153,40 +154,63 @@ export const postImageByLocation = async (location, courseId, imageUrl) => {
         socialId
       }
     },
-  ).then(res => res.data)
-  .catch(err => alert('failure save image'));
-}
+  )
+    .then(res => res.data)
+    .catch(() => alert('failure save image'));
+};
+
+export const postThumbnailImage = async (courseId, imageUrl) => {
+  const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
+
+  return axios.post(
+    `${process.env.API_URL}/course/${courseId}/thumbnail`,
+    {
+      imageUrl
+    },
+    {
+      headers: {
+        'content-type': 'application/json',
+        'userToken': 'Bearer ' + userToken,
+        socialId
+      }
+    },
+  )
+    .then(res => res.data)
+    .catch(() => alert('failure save image'));
+};
+
 
 export const getImageUrl = async (courseId, imageData) => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
-  return (
-    axios.post(
-      `${process.env.API_URL}/course/${courseId}/image/upload`,
-      imageData,
-      {
-        headers: {
-          'Content-Type': `multipart/form-data`,
-          'userToken': 'Bearer ' + userToken,
-          socialId
-        }
-      },
-    ).then(({ data }) => data.imageUrl)
-    .catch(err => console.log('upload error', err.message))
-  );
-}
+  return axios.post(
+    `${process.env.API_URL}/course/${courseId}/image/upload`,
+    imageData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'userToken': 'Bearer ' + userToken,
+        socialId
+      }
+    },
+  )
+    .then(({ data }) => data.imageUrl)
+    .catch(err => console.log('upload error', err.message));
+};
 
 export const getCourseData = async courseId => {
   const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
-  return axios.get(`${process.env.API_URL}/course/${courseId}`,
-  {
-    headers: {
-      userToken: 'Bearer ' + userToken,
-      socialId
-    }
-  }).then(res => res.data);
+  return axios.get(
+    `${process.env.API_URL}/course/${courseId}`,
+    {
+      headers: {
+        userToken: 'Bearer ' + userToken,
+        socialId
+      }
+    }).then(res => res.data);
 };
 
 export const updateCourseInfo = async (courseId, title, description, isPublic) => {
@@ -194,19 +218,34 @@ export const updateCourseInfo = async (courseId, title, description, isPublic) =
   const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
 
   return axios.post(
-      `${process.env.API_URL}/course/${courseId}/info`,
-      {
-        title,
-        description,
-        isPublic
-      },
-      {
-        headers: {
-          'Content-Type': `application/json`,
-          'userToken': 'Bearer ' + userToken,
-          socialId
-        }
-      },
-    ).then(({ data }) => console.log(data))
-    .catch(err => console.log('upload error', err.message));
+    `${process.env.API_URL}/course/${courseId}/info`,
+    {
+      title,
+      description,
+      isPublic
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'userToken': 'Bearer ' + userToken,
+        socialId
+      }
+    },
+  ).then(({ data }) => data);
+};
+
+export const deleteCourse = async courseId => {
+  const userToken = await SecureStore.getItemAsync(authConstans.USERTOKEN);
+  const socialId = await SecureStore.getItemAsync(authConstans.SOCIAL_ID);
+
+  return axios.delete(
+    `${process.env.API_URL}/course/${courseId}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'userToken': 'Bearer ' + userToken,
+        socialId
+      }
+    },
+  ).then(({ data }) => data);
 };

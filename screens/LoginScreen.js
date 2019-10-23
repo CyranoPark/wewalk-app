@@ -1,10 +1,13 @@
 import React from 'react';
-import { Alert, StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native';
 import { Container, Icon, Button, Text, View } from 'native-base';
-import colorConstans from '../constants/Colors';
+import * as SecureStore from 'expo-secure-store';
+
 import { loginWithFacebook } from '../api';
 
-export default LoginScreen = props => {
+import colorConstans from '../constants/Colors';
+
+const LoginScreen = props => {
 
   const onLoginButtonPress = async () => {
     try {
@@ -55,3 +58,5 @@ const styles = StyleSheet.create({
     borderRadius: 5
   }
 });
+
+export default LoginScreen;

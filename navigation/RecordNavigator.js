@@ -5,9 +5,21 @@ import RecordStartScreen from '../screens/RecordStartScreen';
 import RecordScreen from '../screens/RecordScreen';
 import RecordResultScreen from '../screens/RecordResultScreen';
 
-import { postCurrentPath, postImageByLocation, getImageUrl, getCourseData, postInitCourse, updateCourseInfo } from '../api';
-import { calculateElevation, calculateDistance, createFormData, getAddress } from '../utils';
-import mockData from '../constants/locationData';
+import {
+  postCurrentPath,
+  postImageByLocation,
+  postThumbnailImage,
+  getImageUrl,
+  getCourseData,
+  postInitCourse,
+  updateCourseInfo
+} from '../api';
+import {
+  calculateElevation,
+  calculateDistance,
+  createFormData,
+  getAddress
+} from '../utils';
 
 class RecordNavigator extends Component {
   constructor(props) {
@@ -24,7 +36,7 @@ class RecordNavigator extends Component {
       totalCoursePath: [],
       totalCourseData: {},
       counter: 0
-    }
+    };
   }
 
   recordCourse = async () => {
@@ -51,7 +63,7 @@ class RecordNavigator extends Component {
   };
 
   addCurrentPath = async () => {
-    const { courseId, savedCoordinates, courseDistance, courseElevation, totalCoursePath } = this.state;
+    const { courseId, savedCoordinates, courseDistance, courseElevation } = this.state;
     await postCurrentPath(courseId, savedCoordinates, courseDistance, courseElevation);
 
     this.setState({
@@ -66,9 +78,10 @@ class RecordNavigator extends Component {
       type: 'Point',
       coordinates: currentLocation.coordinates,
       timestamp: currentLocation.timestamp
-    }
-    const imageUrl = await getImageUrl(courseId, createFormData(image));
-    const savedImageData = await postImageByLocation(locationData, courseId, imageUrl)
+    };
+
+    const imageUrl = await getImageUrl(courseId, createFormData(image.uri));
+    const savedImageData = await postImageByLocation(locationData, courseId, imageUrl);
 
     this.setState({
       totalCourseImages: this.state.totalCourseImages.concat(savedImageData)
@@ -110,9 +123,7 @@ class RecordNavigator extends Component {
 
   onStartRecording = () => {
     const courseRecodingTimer = async () => {
-      const {
-        recordingStatus
-      } = this.props.screenProps;
+      const { recordingStatus } = this.props.screenProps;
       if (recordingStatus === 'RECORDING') {
         await this.recordCourse();
         if (this.state.savedCoordinates.length === 10) {
@@ -124,10 +135,16 @@ class RecordNavigator extends Component {
     courseRecodingTimer();
   };
 
-  onEndRecording = async () => {
+  onEndRecording = async snapShot => {
     const { onRecordEnd } = this.props.screenProps;
+    const { courseId } = this.state;
+
+    const imageUrl = await getImageUrl(courseId, createFormData(snapShot));
+
+    await postThumbnailImage(courseId, imageUrl);
     await this.addCurrentPath();
-    const courseData = await getCourseData(this.state.courseId);
+
+    const courseData = await getCourseData(courseId);
 
     this.setState({
       totalCourseData: courseData
@@ -138,7 +155,7 @@ class RecordNavigator extends Component {
 
   initializeStateData = async (title, description, isPublic) => {
     const { onRecordInitialize } = this.props.screenProps;
-    await updateCourseInfo(this.state.courseId, title, description, isPublic)
+    await updateCourseInfo(this.state.courseId, title, description, isPublic);
     onRecordInitialize();
     this.setState({
       courseId: null,
@@ -193,7 +210,7 @@ class RecordNavigator extends Component {
             totalCoursePath={totalCoursePath}
             totalCourseData={totalCourseData}
             totalCourseImages={totalCourseImages}
-            onRecordInitButtonPress={this.initializeStateData}
+            onRecordSaveButtonPress={this.initializeStateData}
           />
         );
 

@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Container, Button, Text, Fab, Icon } from 'native-base';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { Container, Button, Fab, Icon } from 'native-base';
+
 import * as ImagePicker from 'expo-image-picker';
+import ViewShot, { captureRef } from 'react-native-view-shot';
+
 import Map from '../components/Map';
 import {
   changeElevationFormat,
   changeDistanceFormat,
   changeRecordTimeFormat
-} from '../utils/index';
+} from '../utils';
 
-export default RecordScreen = props => {
-  const [isFabActive, setIsFabActive] = useState(false);
+const RecordScreen = props => {
+  const [ isFabActive, setIsFabActive ] = useState(false);
+  const mapRef = useRef(null);
   const {
     startLocation,
     currentLocation,
@@ -31,32 +35,46 @@ export default RecordScreen = props => {
       if (!image.cancelled) {
         onPickImage(image);
       }
-    } catch (error) {
-      console.log(error.message)
+    } catch (err) {
+      alert(`Cannot pick Image : ${err.message}`);
     }
   };
 
   const generateCamera = async () => {
-    const image = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
+    try {
+      const image = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
 
-    if (!image.cancelled) {
-      onPickImage(image);
+      if (!image.cancelled) {
+        onPickImage(image);
+      }
+    } catch (err) {
+      alert(`Cannot generate Camera : ${err.message}`);
     }
+  };
+
+  const takeSnapshot = async () => {
+    const snapShot = await captureRef(mapRef, {
+      format: 'jpg',
+      quality: 0.8
+    });
+    onRecordEndButtonPress(snapShot);
   };
 
   return (
     <Container style={{ flex: 1, justifyContent:'center', height: '100%', position:'relative' }}>
-      <Map
-        style={styles.mapview}
-        startLocation={startLocation}
-        currentLocation={currentLocation}
-        totalCoursePath={totalCoursePath}
-        totalCourseImages={totalCourseImages}
-      />
+      <ViewShot ref={mapRef}>
+        <Map
+          style={styles.mapview}
+          startLocation={startLocation}
+          currentLocation={currentLocation}
+          totalCoursePath={totalCoursePath}
+          totalCourseImages={totalCourseImages}
+        />
+      </ViewShot>
       <View style={styles.container}>
         <View style={styles.topBoard}>
           <View style={styles.column}>
@@ -102,7 +120,7 @@ export default RecordScreen = props => {
           iconLeft
           danger
           style={styles.exitButton}
-          onPress={onRecordEndButtonPress}
+          onPress={takeSnapshot}
         >
           <Icon name='exit' />
           <Text style={{ color: 'white'}}>End Record</Text>
@@ -173,3 +191,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 });
+
+export default RecordScreen;

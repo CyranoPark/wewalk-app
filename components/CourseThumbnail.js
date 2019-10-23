@@ -2,10 +2,9 @@ import React from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import colorConstans from '../constants/Colors';
 import {
-  changeDateFormat,
   changeElevationFormat,
   changeDistanceFormat,
-  changeSpotTimeFormat
+  changeRecordTimeFormat
 } from '../utils';
 
 const CourseThumbnail = props => {
@@ -19,42 +18,30 @@ const CourseThumbnail = props => {
             <Text style={styles.courseTitle}>
               {course.item.title}
             </Text>
-            <Text style={styles.description}>
-              {course.item.description}
-            </Text>
+            <View>
+              <Text style={styles.locationText}>
+                {course.item.start_location.address}
+              </Text>
+            </View>
           </View>
           <View style={styles.creator}>
             <Text style={styles.titleText}>by</Text>
             <Text style={styles.infoText}>
               {course.item.created_by.name}
             </Text>
-            <View style={styles.createDate}>
-              <Text style={styles.titleText}>Date</Text>
-              <Text style={styles.infoText}>
-                {changeDateFormat(course.item.createdAt)}
-              </Text>
-            </View>
           </View>
         </View>
         <View style={styles.imageWrap}>
           <Image
             source={{uri : course.item.thumbnail}}
-            style={{height: 200, width: 200, flex: 1}}
+            style={{height: 300, width: 200, flex: 1}}
           />
           <View style={styles.resultData}>
-            <View>
-              <Text style={styles.titleText}>
-                StartLocation
-              </Text>
-              <Text style={styles.locationText}>
-                {course.item.start_location.address}
-              </Text>
-            </View>
             <View>
               <Text style={styles.titleText}>distance</Text>
               <Text style={styles.dataText}>
                 {changeDistanceFormat(course.item.distance)}
-                km
+                <Text>km</Text>
               </Text>
             </View>
             <View>
@@ -67,7 +54,7 @@ const CourseThumbnail = props => {
             <View>
               <Text style={styles.titleText}>time</Text>
               <Text style={styles.dataText}>
-                {changeSpotTimeFormat(course.item.start_location.timestamp, course.item.path[course.item.path.length - 1].timestamp)}
+                {changeRecordTimeFormat(course.item.start_location.timestamp, course.item.path[course.item.path.length - 1].timestamp)}
               </Text>
             </View>
           </View>
@@ -79,10 +66,10 @@ const CourseThumbnail = props => {
 
 const styles = StyleSheet.create({
   thumbnailWrap: {
-    height: 300,
+    height: 400,
     marginBottom: 10,
     width: '98%',
-    borderColor: '#ccc',
+    borderColor: '#eee',
     borderWidth: 1
   },
   information: {
@@ -91,42 +78,49 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   title: {
-    width: '50%',
+    width: '80%',
+    padding: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     flexDirection: 'column',
   },
   locationText: {
-    fontSize: 10,
-    color: colorConstans.mainColor,
+    fontSize: 15,
+    color: colorConstans.tintTextColor,
     fontWeight: 'bold',
-    textAlign: 'center',
+    // textAlign: 'center',
     fontStyle: 'italic'
   },
   infoText: {
     fontSize: 15,
-    color: colorConstans.mainColor,
     fontWeight: 'bold',
     textAlign: 'center',
     fontStyle: 'italic'
   },
+  createDate: {
+    alignItems: 'flex-end'
+  },
   creator: {
-    width: '50%',
+    width: '20%',
+    padding: 10,
     justifyContent: 'center',
+    alignItems: 'flex-end'
   },
   imageWrap: {
-    height: 200,
+    height: 300,
     flexDirection: 'row',
   },
   courseTitle: {
     fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
+    overflow: 'hidden'
   },
   description: {
     fontSize: 13,
     color: colorConstans.mainColor,
     fontWeight: 'bold',
+    overflow: 'hidden'
   },
   resultData: {
     position: 'absolute',
@@ -139,7 +133,7 @@ const styles = StyleSheet.create({
     width: 150,
   },
   dataText: {
-    fontSize: 20,
+    fontSize: 25,
     color: colorConstans.mainColor,
     fontWeight: 'bold',
     textAlign: 'center',

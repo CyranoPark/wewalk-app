@@ -2,10 +2,11 @@ import React from 'react';
 import { StyleSheet } from 'react-native'
 import { Container, Button, Text, Spinner, View } from 'native-base';
 import colorConstans from '../constants/Colors';
-import mockData from '../constants/locationData';
 
-export default RecordStartScreen = props => {
+
+const RecordStartScreen = props => {
   const { onRecordStartButtonPress, isLoadingRecordScreen } = props;
+
   return (
     <Container style={styles.container}>
       <View>
@@ -19,8 +20,8 @@ export default RecordStartScreen = props => {
           }}>
           START
         </Text>
-          {
-            isLoadingRecordScreen ?
+        {
+          isLoadingRecordScreen ?
             <Spinner /> :
             <Button
               primary
@@ -29,7 +30,7 @@ export default RecordStartScreen = props => {
             >
               <Text>start Record</Text>
             </Button>
-          }
+        }
       </View>
     </Container>
   );
@@ -42,3 +43,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   }
 });
+
+export default RecordStartScreen;

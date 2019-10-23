@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Text, Spinner } from 'native-base';
-import { View, FlatList, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
-import * as Location from 'expo-location';
-import CourseThumbnail from '../components/CourseThumbnail';
-import { getMyCourses } from '../api';
-import { getAddress } from '../utils';
-import { bold } from 'ansi-colors';
+import { FlatList, Text } from 'react-native';
+
+import MyCourseListItem from '../components/MyCourseListItem';
+import { getMyCourses, updateCourseInfo, deleteCourse } from '../api';
 
 export default class MyCourseScreen extends Component {
   constructor(props) {
@@ -43,24 +39,55 @@ export default class MyCourseScreen extends Component {
   renderCourseDetail = courseData => {
     this.props.navigation.navigate('CourseDetail', {
       courseData,
+      isMyCourse: true,
+      updateCourse: this.updateCourse
     });
   };
 
+  updateCourse = async (courseId, title, description, isPublic)  => {
+    try {
+      this.setState({ isLoading: true });
+      await updateCourseInfo(courseId, title, description, isPublic);
+    } catch (error) {
+      alert('update failed');
+    }
+    await this.handleLoadMyCourse();
+  };
+
+  deleteCourse = async courseId => {
+    try {
+      this.setState({ isLoading: true });
+      await deleteCourse(courseId);
+    } catch (error) {
+      alert('delete failed');
+    }
+    this.handleLoadMyCourse();
+  };
+
   render() {
+    console.log(!this.state.myCourses.length);
+    if (!this.state.myCourses.length) {
+      return (
+        <Text>Nothing..</Text>
+      );
+    }
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 10 }}>
-        <FlatList
-          refreshing={this.state.isLoading}
-          onRefresh={this.handleLoadMyCourse}
-          data={this.state.myCourses}
-          renderItem={course => <CourseThumbnail course={course} onPressThumbnail={this.renderCourseDetail} />}
-          keyExtractor={(item, i) => (item._id + i)}
-        />
-      </View>
+      <FlatList
+        refreshing={this.state.isLoading}
+        onRefresh={() => {
+          this.setState({ isLoading: true });
+          this.handleLoadMyCourse();
+        }}
+        data={this.state.myCourses}
+        renderItem={course => (
+          <MyCourseListItem
+            course={course}
+            onDeleteButtonPress={this.deleteCourse}
+            onListItemPress={this.renderCourseDetail}
+          />
+        )}
+        keyExtractor={(item, i) => (item._id + i)}
+      />
     );
   }
 }
-
-MyCourseScreen.navigationOptions = {
-  marginTop: 24
-};

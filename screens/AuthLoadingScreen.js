@@ -1,6 +1,6 @@
 import { AppLoading } from 'expo';
 import React from 'react';
-import { Alert } from 'react-native'
+import { Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as SecureStore from 'expo-secure-store';
 import * as Font from 'expo-font';
@@ -8,7 +8,7 @@ import { Asset } from 'expo-asset';
 
 import authConstans from '../constants/auth';
 
-export default AuthLoadingScreen = (props) => {
+const AuthLoadingScreen = props => {
   const { navigation } = props;
   const {
     isLoadingComplete,
@@ -19,6 +19,8 @@ export default AuthLoadingScreen = (props) => {
     if (!isLoadingComplete) {
       await Promise.all([
         Asset.loadAsync([
+          require('../assets/images/heremarker.png'),
+          require('../assets/images/startmarker.png')
         ]),
         Font.loadAsync({
           Roboto_medium: require('../assets/fonts/Roboto_medium.ttf')
@@ -33,7 +35,7 @@ export default AuthLoadingScreen = (props) => {
     }
   };
 
-  const handleLoadingError = error => {
+  const handleLoadingError = () => {
     Alert.alert('Failed to load app. Please log on again.');
   };
 
@@ -54,3 +56,5 @@ export default AuthLoadingScreen = (props) => {
     />
   );
 };
+
+export default AuthLoadingScreen;

@@ -1,12 +1,10 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator } from 'react-navigation';
 
 import FeedScreen from '../screens/FeedScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
 import MyCourseScreen from '../screens/MyCourseScreen';
 import RecordNavigator from './RecordNavigator';
-import ProfileScreen from '../screens/ProfileScreen';
 import LogoutHeader from '../components/LogoutHeader';
 
 import TabBarIcon from '../components/TabBarIcon';
@@ -20,7 +18,7 @@ const FeedStack = createStackNavigator(
         return {
           headerRight: <LogoutHeader navigation={props.navigation} />,
           title: 'Feed',
-          headerTintColor: '#fff',
+          headerTintColor: colorConstans.headerTextColor,
           headerStyle: {
             backgroundColor: colorConstans.mainColor,
           },
@@ -31,7 +29,7 @@ const FeedStack = createStackNavigator(
       screen: CourseDetailScreen,
       navigationOptions: {
         title: 'Details',
-        headerTintColor: '#fff',
+        headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor,
         },
@@ -40,16 +38,14 @@ const FeedStack = createStackNavigator(
   }
 );
 
-FeedStack.navigationOptions = () => {
-  return {
-    tabBarLabel: 'Feed',
-    tabBarIcon: ({ focused }) => (
-      <TabBarIcon
-        focused={focused}
-        name='md-list-box'
-      />
-    ),
-  };
+FeedStack.navigationOptions = {
+  tabBarLabel: 'Feed',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name='md-list-box'
+    />
+  )
 };
 
 FeedStack.path = '';
@@ -63,12 +59,12 @@ const RecordStack = createSwitchNavigator(
 RecordStack.navigationOptions = {
   tabBarLabel: 'Record',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={'md-recording'} />
-  ),
+    <TabBarIcon
+      focused={focused}
+      name={'md-recording'}
+    />
+  )
 };
-
-RecordStack.path = '';
-
 
 const myCourseStack = createStackNavigator(
   {
@@ -77,19 +73,19 @@ const myCourseStack = createStackNavigator(
       navigationOptions: props => {
         return {
           headerRight: <LogoutHeader navigation={props.navigation} />,
-          title: 'Feed',
-          headerTintColor: '#fff',
+          title: 'myCourse',
+          headerTintColor: colorConstans.headerTextColor,
           headerStyle: {
             backgroundColor: colorConstans.mainColor,
           },
-        }
+        };
       }
     },
     CourseDetail: {
       screen: CourseDetailScreen,
       navigationOptions: {
         title: 'My Course Details',
-        headerTintColor: '#fff',
+        headerTintColor: colorConstans.headerTextColor,
         headerStyle: {
           backgroundColor: colorConstans.mainColor,
         },
@@ -105,40 +101,18 @@ myCourseStack.navigationOptions = {
       focused={focused}
       name={'md-archive'}
     />
-  ),
+  )
 };
 
-myCourseStack.path = '';
-
-const ProfileStack = createStackNavigator(
+const MainTabNavigator = createBottomTabNavigator(
   {
-    Profile: {
-      screen: ProfileScreen,
-      navigationOptions: {
-        title: 'Profile'
-      }
-    },
+    FeedStack,
+    RecordStack,
+    myCourseStack
+  },
+  {
+    initialRouteName: 'FeedStack'
   }
 );
 
-ProfileStack.navigationOptions = {
-  tabBarLabel: 'Profile',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
-  ),
-};
-
-ProfileStack.path = '';
-
-const tabNavigator = createBottomTabNavigator({
-  FeedStack,
-  RecordStack,
-  myCourseStack,
-  ProfileStack,
-},{
-  initialRouteName: 'FeedStack'
-});
-
-tabNavigator.path = '';
-
-export default tabNavigator;
+export default MainTabNavigator;

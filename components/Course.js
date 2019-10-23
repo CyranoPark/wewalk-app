@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { Card, CardItem, Text } from 'native-base';
-import colorConstans from '../constants/Colors';
 import Map from './Map';
+
+import colorConstans from '../constants/Colors';
 import {
   changeElevationFormat,
   changeDistanceFormat,
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
   },
   courseMap: {
     width: '100%',
-    height: 300
+    height: 600
   },
   courseData:{
     width: '100%',
@@ -149,6 +150,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   mapview: {
+    width: '100%',
+    height: 550
   },
 });
 

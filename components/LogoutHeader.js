@@ -1,7 +1,10 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { Button } from 'native-base';
-import { logoutAsync } from '../api'
+
+import { logoutAsync } from '../api';
+
+import colorConstans from '../constants/Colors';
 
 const LogoutHeader = props => {
 
@@ -16,7 +19,15 @@ const LogoutHeader = props => {
       style={{ marginRight: 10 }}
       onPress={logout}
     >
-      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>Log out</Text>
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: 'bold',
+          color: colorConstans.headerTextColor
+        }}
+      >
+        Log out
+      </Text>
     </Button>
   );
 };

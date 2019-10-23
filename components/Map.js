@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Image } from 'react-native';
 import MapView, { Polyline, Marker ,PROVIDER_GOOGLE } from 'react-native-maps';
+import { Asset } from 'expo-asset';
+
 import { changeCoordinateData } from '../utils';
+const hereMarker = Asset.fromModule(require('../assets/images/heremarker.png')).uri;
+const startMarker = Asset.fromModule(require('../assets/images/startmarker.png')).uri;
 
 const Map = props => {
+  const [ delta, setDelta ] = useState({
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01
+  });
   const { totalCoursePath, startLocation, currentLocation, totalCourseImages } = props;
 
+  const setCurrentDelta = (region) => {
+    setDelta({
+      latitudeDelta: region.latitudeDelta,
+      longitudeDelta: region.longitudeDelta
+    });
+  };
+
   const renderCurrentLocation = () => {
+    const { latitudeDelta, longitudeDelta } = delta;
     return {
       latitude: currentLocation.coordinates[1],
       longitude: currentLocation.coordinates[0],
-      latitudeDelta: 0.003,
-      longitudeDelta: 0.003
+      latitudeDelta,
+      longitudeDelta
     };
   };
 
@@ -42,21 +58,32 @@ const Map = props => {
       initialRegion={{
         latitude: currentLocation.coordinates[1],
         longitude: currentLocation.coordinates[0],
-        latitudeDelta: 0.003,
-        longitudeDelta: 0.003
+        latitudeDelta: delta.latitudeDelta,
+        longitudeDelta: delta.longitudeDelta
       }}
       region={renderCurrentLocation()}
+      onRegionChangeComplete={setCurrentDelta}
     >
       <Marker
         coordinate={changeCoordinateData(startLocation)}
         title={'Start!'}
         description={'your start Point'}
-      />
+      >
+        <Image
+          source={{uri: startMarker}}
+          style={styles.markerImage}
+        />
+      </Marker>
       <Marker
         coordinate={renderCurrentLocation()}
         title={'Start!'}
         description={'your start Point'}
-      />
+      >
+        <Image
+          source={{uri: hereMarker}}
+          style={styles.markerImage}
+        />
+      </Marker>
       {renderImageMarker() || <></>}
       <Polyline
         coordinates={renderTotalCourse()}
@@ -75,6 +102,10 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderColor: '#454d5d'
   },
+  markerImage: {
+    width: 50,
+    height: 50
+  }
 });
 
 export default Map;
