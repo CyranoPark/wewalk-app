@@ -30,7 +30,7 @@ export const calculateElevation = (prev, current) => {
       }
     }
   ).then(({ data }) => {
-    if (data.results[1].elevation - data.results[0].elevation > 0) {
+    if (data.results[1].elevation - data.results[0].elevation > 1) {
       return data.results[1].elevation - data.results[0].elevation;
     }
     return 0;

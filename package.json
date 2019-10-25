@@ -45,10 +45,14 @@
     "babel-eslint": "^10.0.3",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-preset-expo": "^7.0.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.5.1",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-native": "^3.7.0",
-    "jest-expo": "^35.0.0"
+    "jest-enzyme": "^7.1.1",
+    "jest-expo": "^35.0.0",
+    "react-native-mock-render": "^0.1.5"
   },
   "private": true
 }

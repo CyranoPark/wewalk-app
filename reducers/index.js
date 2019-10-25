@@ -7,7 +7,11 @@ import {
   COMPLETE_LOADING_RECORD_SCREEN,
   INIT_STATE
 } from '../constants/actionType';
-
+import {
+  BEFORE_RECORDING,
+  RECORDING,
+  AFTER_RECORDING
+} from '../constants/status';
 const initialState = {
   isLoadingComplete: false,
   isLoadingRecord: false,
@@ -23,17 +27,17 @@ export default reducer = (state = initialState, action) => {
 
   case INIT_RECORDING:
     return Object.assign({...state}, {
-      recordingStatus: 'BEFORE_RECORDING'
+      recordingStatus: BEFORE_RECORDING
     });
 
   case START_RECORDING:
     return Object.assign({...state}, {
-      recordingStatus: 'RECORDING'
+      recordingStatus: RECORDING
     });
 
   case END_RECORDING:
     return Object.assign({...state}, {
-      recordingStatus: 'AFTER_RECORDING'
+      recordingStatus: AFTER_RECORDING
     });
 
   case LOADING_RECORD_SCREEN:

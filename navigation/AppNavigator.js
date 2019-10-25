@@ -12,7 +12,6 @@ const LoginContainer = props => {
   const facebookLogin = async () => {
     try {
       const user = await loginWithFacebook();
-      console.log(user);
       Alert.alert('Logged in!', `Hi ${user.name}!`);
       props.navigation.navigate('Main');
     } catch ({ message }) {

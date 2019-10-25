@@ -45,7 +45,7 @@ class RecordNavigator extends Component {
 
   recordCourse = async () => {
     try {
-      const { counter, totalCoursePath, startLocation } = this.state;
+      const { counter, totalCoursePath } = this.state;
       const currentLocationData = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = currentLocationData.coords;
       const currentLocation = {
@@ -54,9 +54,8 @@ class RecordNavigator extends Component {
       };
 
       const prevLocation = totalCoursePath[totalCoursePath.length - 1];
-      const currentElevation = await calculateElevation(startLocation, currentLocation);
+      const currentElevation = await calculateElevation(prevLocation, currentLocation);
       const currentDistance = calculateDistance(prevLocation, currentLocation);
-
       this.setState({
         savedCoordinates: this.state.savedCoordinates.concat(currentLocation),
         courseElevation: this.state.courseElevation + currentElevation,

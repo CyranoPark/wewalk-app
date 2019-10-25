@@ -1,0 +1,64 @@
+{
+  "start_location": {
+    "type": "Point",
+    "coordinates": [127.0591757, 37.5060263],
+    "address": "1012-111 Daechi 2(i)-dong, Gangnam-gu, Seoul, South Korea",
+    "timestamp": "2019-10-23T11:00:21.392Z"
+  },
+  "ispublic": true,
+  "thumbnail": "https://wewalk.s3.ap-northeast-2.amazonaws.com/ReactNative-snapshot-image3677255859367698714.jpg",
+  "created_by": "5daef013dff9f377ac46e1b7",
+  "path": [
+    {
+      "type": "Point",
+      "coordinates": [127.0591757, 37.5060263],
+      "timestamp": "2019-10-23T11:00:21.392Z"
+    },
+    {
+      "type": "Point",
+      "coordinates": [127.0591757, 37.5060263],
+      "timestamp": "2019-10-23T11:00:21.392Z"
+    },
+    {
+      "type": "Point",
+      "coordinates": [127.0591757, 37.5060263],
+      "timestamp": "2019-10-23T11:00:22.142Z"
+    },
+    {
+      "type": "Point",
+      "coordinates": [127.0591677, 37.5060132],
+      "timestamp": "2019-10-23T11:00:25.163Z"
+    },
+    {
+      "type": "Point",
+      "coordinates": [127.0591678, 37.5060129],
+      "timestamp": "2019-10-23T11:00:29.530Z"
+    },
+    {
+      "type": "Point",
+      "coordinates": [127.0591838, 37.5060185],
+      "timestamp": "2019-10-23T11:00:32.334Z"
+    },
+    {
+      "type": "Point",
+      "coordinates": [127.0591797, 37.5060237],
+      "timestamp": "2019-10-23T11:00:35.199Z"}
+    ],
+  "distance": 0.003882056959503496,
+  "elevation": 0.9,
+  "images_by_location": [
+    {
+      "location": {
+        "type": "Point",
+        "coordinates": [127.0591678, 37.5060129],
+        "timestamp": "2019-10-23T11:00:29.530Z"
+      },
+      "image_url": "https://wewalk.s3.ap-northeast-2.amazonaws.com/16527010-9a34-46ce-9b17-f862337f23ef.jpg"
+    }
+  ],
+  "createdAt": "2019-10-23T11:00:21.772Z",
+  "updatedAt": "2019-10-23T11:00:48.271Z",
+  "__v": 2,
+  "description": "",
+  "title": "사진테스트"
+}
