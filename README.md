@@ -119,3 +119,6 @@ npm test
 - 기록 중단/재시작 기능
 - 백그라운드 구동 표시 기능
 - ios 버전 개발
+
+## Sincere Thanks
+[Ken Huh](https://github.com/ken123777 "ken huh") / Vanilla Coding
