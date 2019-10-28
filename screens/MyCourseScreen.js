@@ -49,6 +49,7 @@ export default class MyCourseScreen extends Component {
     try {
       this.setState({ isLoading: true });
       await updateCourseInfo(courseId, title, description, isPublic);
+      this.handleLoadMyCourse();
     } catch (error) {
       alert('update failed');
     }
